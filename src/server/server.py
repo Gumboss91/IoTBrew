@@ -11,7 +11,7 @@ server_socket.bind(('', LOCALPORT))
 
 while True:
     message, address = server_socket.recvfrom(1024)
-    caophost = address(0)
+    caophost = address[0]
     client = CoapClient(server=(caophost, COAP_PORT))
     response = client.get(path)
     client.stop()
