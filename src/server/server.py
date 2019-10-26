@@ -4,7 +4,7 @@ from coapthon.client.helperclient import HelperClient as CoapClient
 
 logging.disable(logging.DEBUG)
 
-path ="sens/temp"
+path ="sen/readings/temp"
 COAP_PORT = 5683
 
 LOCALPORT = 3001
