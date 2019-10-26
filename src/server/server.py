@@ -1,5 +1,8 @@
 import socket
+import logging
 from coapthon.client.helperclient import HelperClient as CoapClient
+
+logging.disable(logging.DEBUG)
 
 path ="sens/temp"
 COAP_PORT = 5683
@@ -12,7 +15,7 @@ server_socket.bind(('', LOCALPORT))
 while True:
     message, address = server_socket.recvfrom(1024)
     caophost = address[0]
-    client = CoapClient(server=(caophost, COAP_PORT))
-    response = client.get(path)
-    client.stop()
-    print("Received", response, address)
+    coapclient = CoapClient(server=(caophost, COAP_PORT))
+    response = coapclient.get(path)
+    coapclient.stop()
+    print("Received", response.pretty_print(), address)
