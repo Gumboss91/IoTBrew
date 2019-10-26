@@ -11,7 +11,7 @@ urls = [
     "sen/readings/hum",
     "sen/readings/light"
 ]
-path =
+
 COAP_PORT = 5683
 
 LOCALPORT = 3001
