@@ -14,7 +14,7 @@ server_socket.bind(('', LOCALPORT))
 
 while True:
     message, address = server_socket.recvfrom(1024)
-    print("UDP received, starting coap", address)
+    print("UDP received, starting coap", address[0])
     caophost = address[0]
     coapclient = CoapClient(server=(caophost, COAP_PORT))
     response = coapclient.get(path, timeout=20)
@@ -22,3 +22,5 @@ while True:
 
     if(response):
         print("Received", response.pretty_print())
+    else:
+        print("Coap Timeout")
