@@ -14,8 +14,9 @@ server_socket.bind(('', LOCALPORT))
 
 while True:
     message, address = server_socket.recvfrom(1024)
+    print("UDP received, starting coap", address)
     caophost = address[0]
     coapclient = CoapClient(server=(caophost, COAP_PORT))
     response = coapclient.get(path)
     coapclient.stop()
-    print("Received", response.pretty_print(), address)
+    print("Received", response.pretty_print())
