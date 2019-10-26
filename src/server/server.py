@@ -19,4 +19,6 @@ while True:
     coapclient = CoapClient(server=(caophost, COAP_PORT))
     response = coapclient.get(path, timeout=20)
     coapclient.stop()
-    print("Received", response.pretty_print())
+
+    if(response):
+        print("Received", response.pretty_print())
