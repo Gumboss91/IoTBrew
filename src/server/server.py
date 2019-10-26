@@ -17,6 +17,6 @@ while True:
     print("UDP received, starting coap", address)
     caophost = address[0]
     coapclient = CoapClient(server=(caophost, COAP_PORT))
-    response = coapclient.get(path)
+    response = coapclient.get(path, timeout=20)
     coapclient.stop()
     print("Received", response.pretty_print())
