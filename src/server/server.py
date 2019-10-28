@@ -23,6 +23,7 @@ mqtt_connected = False
 
 # MQTT functions
 def mqtt_on_connect(client, userdata, flags, rc):
+    global mqtt_connected
     mqtt_connected = True
     print("MQTT Connected")
 
