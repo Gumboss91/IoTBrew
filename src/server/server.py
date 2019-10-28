@@ -57,6 +57,8 @@ while True:
                 elem = response.payload
                 client.publish("6lopawan/sensor/" + caophost + "/" + url, elem)
                 print("Publish:", elem)
+            else:
+                print("No MQTT connection", mqtt_connected)
         else:
             print("Coap Timeout")
         coapclient.stop()
