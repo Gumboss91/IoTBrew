@@ -33,8 +33,8 @@ server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
 server_socket.bind(('', LOCAL_PORT))
 
 client = mqtt.Client()
-client.on_connect = on_connect
-client.on_disconnect = on_disconnect
+client.on_connect = mqtt_on_connect
+client.on_disconnect = mqtt_on_disconnect
 
 client.loop_start()
 
