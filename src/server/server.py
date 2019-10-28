@@ -24,9 +24,11 @@ mqtt_connected = False
 # MQTT functions
 def mqtt_on_connect(client, userdata, flags, rc):
     mqtt_connected = True
+    print("MQTT Connected")
 
 def mqtt_on_disconnect(client, userdata, flags, rc):
     mqtt_connected = False
+    print("MQTT Disconnected")
 
 # UDP
 server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
