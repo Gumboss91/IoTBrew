@@ -37,6 +37,7 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
 
 # Announce our route to 6lbr
 client_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM) # UDP
+client_socket.bind((IP_LAN, PORT_6LBR))
 client_socket.sendto(bytes("1\n\n", "utf-8"), (IP_6LBR, PORT_6LBR))
 
 # UDP
