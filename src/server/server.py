@@ -61,7 +61,7 @@ def parseDeviceWebsite():
 
             if(not found):
                 print("New device", devaddr)
-                deviselist.append({"dev": devaddr, "observed": False)
+                deviselist.append({"dev": devaddr, "observed": False})
 
 parseDeviceWebsite()
 exit()
