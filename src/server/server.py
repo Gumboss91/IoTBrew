@@ -51,7 +51,7 @@ def parseDeviceWebsite():
     for row in bs.findAll('tr'):
         cells = row.findAll('td')
         print("Row", cells[0].string)
-        if "<a href" in cells[0].string:
+        if cells[8].string == "OK":
             print("Found sensor", cells[0].string)
 
 parseDeviceWebsite()
