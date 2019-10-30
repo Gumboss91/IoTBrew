@@ -3,6 +3,8 @@ import logging
 import json
 from coapthon.client.helperclient import HelperClient as CoapClient
 import paho.mqtt.client as mqtt
+import urllib.request
+from bs4 import BeautifulSoup
 
 logging.disable(logging.DEBUG)
 
@@ -35,10 +37,23 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
     mqtt_connected = False
     print("MQTT Disconnected")
 
-# Announce our route to 6lbr
-client_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM) # UDP
-client_socket.bind((IP_LAN, PORT_6LBR))
-client_socket.sendto(bytes("1\n\n", "utf-8"), (IP_6LBR, PORT_6LBR))
+deviselist = []
+# HTTP parse devices
+def parseDeviceWebsite():
+    fp = urllib.request.urlopen("http://[bbbb::100]/sensors.html")
+    mybytes = fp.read()
+
+    mystr = mybytes.decode("utf8")
+    fp.close()
+
+    bs = BeautifulSoup(mystr, 'lxml')
+    for row in bs.findAll('tr'):
+        cells = row.findAll('td')
+        if "<a href" in cell[0].string:
+            print("Found sensor", cell[0].string)
+
+parseDeviceWebsite()
+exit()
 
 # UDP
 server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
