@@ -40,19 +40,28 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
 deviselist = []
 # HTTP parse devices
 def parseDeviceWebsite():
+    global deviselist
     fp = urllib.request.urlopen("http://[bbbb::100]/sensors.html")
     mybytes = fp.read()
 
     mystr = mybytes.decode("utf8")
     fp.close()
-    print("Received", mystr)
-    print("\n\n")
+
     bs = BeautifulSoup(mystr, 'html.parser')
     for row in bs.findAll('tr'):
         cells = row.findAll('td')
-        print("Row", cells[0].string)
         if cells[8].string == "OK":
-            print("Found sensor", cells[0].string)
+            devaddr = cells[0].string
+            found = False
+
+            for dev in deviselist:
+                if(dev["dev"] == devaddr):
+                    found = True
+                    break
+
+            if(not found):
+                print("New device", devaddr)
+                deviselist.append({"dev": devaddr, "observed": False)
 
 parseDeviceWebsite()
 exit()
