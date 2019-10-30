@@ -49,8 +49,8 @@ def parseDeviceWebsite():
     print("\n\n")
     bs = BeautifulSoup(mystr, 'html.parser')
     for row in bs.findAll('tr'):
-        print("Row")
         cells = row.findAll('td')
+        print("Row", cells[0].string)
         if "<a href" in cells[0].string:
             print("Found sensor", cells[0].string)
 
