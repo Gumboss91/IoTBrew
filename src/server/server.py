@@ -14,8 +14,12 @@ urls = [
     "sen/readings/light"
 ]
 
+IP_6LBR = "bbbb::200"
+IP_LAN = "bbbb::100"
+PORT_6LBR = 3000
+
 COAP_PORT = 5683
-LOCAL_PORT = 3001
+PORT_DISCOVERY = 3001
 
 MQTT_BROCKER = "127.0.0.1"
 
@@ -31,9 +35,13 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
     mqtt_connected = False
     print("MQTT Disconnected")
 
+# Announce our route to 6lbr
+client_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM) # UDP
+client_socket.sendto(bytes("1", "utf-8"), (IP_6LBR, PORT_6LBR))
+
 # UDP
 server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
-server_socket.bind(('bbbb::200', LOCAL_PORT))
+server_socket.bind((IP_LAN, PORT_DISCOVERY))
 
 #client = mqtt.Client()
 #client.on_connect = mqtt_on_connect
