@@ -50,17 +50,17 @@ while True:
     print("UDP received, starting coap", address[0])
     caophost = address[0]
 
-    for url in urls:
-        coapclient = CoapClient(server=(caophost, COAP_PORT))
-        response = coapclient.get(url, timeout=20)
-        if(response):
-            print("Received", response.pretty_print())
-            if mqtt_connected:
-                elem = response.payload
-                client.publish("6lopawan/sensor/" + caophost + "/" + url, elem)
-                print("Publish:", elem)
-            else:
-                print("No MQTT connection", mqtt_connected)
-        else:
-            print("Coap Timeout")
-        coapclient.stop()
+    #for url in urls:
+    #    coapclient = CoapClient(server=(caophost, COAP_PORT))
+    #    response = coapclient.get(url, timeout=20)
+    #    if(response):
+    #        print("Received", response.pretty_print())
+    #        if mqtt_connected:
+    #            elem = response.payload
+    #            client.publish("6lopawan/sensor/" + caophost + "/" + url, elem)
+    #            print("Publish:", elem)
+    #        else:
+    #            print("No MQTT connection", mqtt_connected)
+    #    else:
+    #        print("Coap Timeout")
+    #    coapclient.stop()
