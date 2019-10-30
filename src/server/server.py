@@ -45,7 +45,8 @@ def parseDeviceWebsite():
 
     mystr = mybytes.decode("utf8")
     fp.close()
-
+    print("Received", mystr)
+    print("\n\n")
     bs = BeautifulSoup(mystr, 'html.parser')
     for row in bs.findAll('tr'):
         cells = row.findAll('td')
