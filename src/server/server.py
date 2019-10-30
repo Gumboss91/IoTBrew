@@ -45,6 +45,7 @@ while True:
     if not mqtt_connected:
         client.connect(MQTT_BROCKER)
 
+    print("Waiting for data")
     message, address = server_socket.recvfrom(1024)
     print("UDP received, starting coap", address[0])
     caophost = address[0]
