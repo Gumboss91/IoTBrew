@@ -33,7 +33,7 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
 
 # UDP
 server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
-server_socket.bind(('', LOCAL_PORT))
+server_socket.bind(('bbbb::200', LOCAL_PORT))
 
 client = mqtt.Client()
 client.on_connect = mqtt_on_connect
