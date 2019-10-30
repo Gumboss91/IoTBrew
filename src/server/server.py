@@ -14,8 +14,8 @@ urls = [
     "sen/readings/light"
 ]
 
-IP_6LBR = "bbbb::200"
-IP_LAN = "bbbb::100"
+IP_6LBR = "bbbb::100"
+IP_LAN = "bbbb::200"
 PORT_6LBR = 3000
 
 COAP_PORT = 5683
