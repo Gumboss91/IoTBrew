@@ -46,7 +46,7 @@ def parseDeviceWebsite():
     mystr = mybytes.decode("utf8")
     fp.close()
 
-    bs = BeautifulSoup(mystr, 'lxml')
+    bs = BeautifulSoup(mystr, 'html.parser')
     for row in bs.findAll('tr'):
         cells = row.findAll('td')
         if "<a href" in cell[0].string:
