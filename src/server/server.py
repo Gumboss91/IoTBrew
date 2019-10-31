@@ -62,33 +62,27 @@ def parseDeviceWebsite():
         if len(cells) > 0:
             prev = row.previous_sibling
             if str(prev) == "<h2>Routes</h2>":
-               print("Found", cells[0])
-               matches = re.match("<a href=\"route-rm\?(.*)\"", str(cells[0]))
-               if(matches):
-                   print(matches.group(1))
-        continue
-        status = cells[8].string
-        try:
-            lastseen = int(cells[7].string)
-            if status == "OK" and lastseen and lastseen < 60*5:
-                devaddr = cells[0].string
-                newdevices.append(devaddr)
+                print("Found", cells[0])
+                matches = re.match("<a href=\"route-rm\?(.*)\"", str(cells[0]))
+                if(matches):     
+                    devaddr = matches.group(1)
+                    newdevices.append(devaddr)
 
-                found = False
-                for key in deviselist:
-                    dev = deviselist[key]
-                    if(dev["dev"] == devaddr):
-                        found = True
-                        break
+                    found = False
+                    for key in deviselist:
+                        dev = deviselist[key]
+                        if(dev["dev"] == devaddr):
+                            found = True
+                            break
 
-                if(not found):
-                    print("New sensor device", devaddr)
-                    coapclient = CoapClient(server=(caophost, COAP_PORT))
-                    resp = coapclient.get(".well-known/core")
-                    data = resp.payload
-                    print("Data", data)
-                    elem = {"dev": devaddr, "coap": coapclient}
-                    deviselist.append(elem)
+                    if(not found):
+                        print("New sensor device", devaddr)
+                        coapclient = CoapClient(server=(caophost, COAP_PORT))
+                        resp = coapclient.get(".well-known/core")
+                        data = resp.payload
+                        print("Data", data)
+                        elem = {"dev": devaddr, "coap": coapclient}
+                        deviselist.append(elem)
         except ValueError:
             pass
 
