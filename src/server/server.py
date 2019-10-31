@@ -1,6 +1,7 @@
 import socket
 import logging
 import json
+import re
 from coapthon.client.helperclient import HelperClient as CoapClient
 import paho.mqtt.client as mqtt
 import urllib.request
@@ -62,6 +63,9 @@ def parseDeviceWebsite():
             prev = row.previous_sibling
             if str(prev) == "<h2>Routes</h2>":
                print("Found", cells[0])
+               matches = re.match("<a href=\"route-rm?f\"([0-9:A-F]+)str(prev))
+               if(matches):
+                   print(matches.group(1))
         continue
         status = cells[8].string
         try:
