@@ -51,6 +51,7 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
 #client.loop_start()
 
 ttl = struct.pack('b', 100)
+server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
 server_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
 server_socket.sendto("ffff\n\n", (IP_MULTICAST, PORT_DISCOVERY))
 while True:
