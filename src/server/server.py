@@ -58,7 +58,9 @@ def parseDeviceWebsite():
     pres = bs.findAll('pre', recursive=True)
     for row in pres:
         cells = row.findAll('a')
-        print("Cells", cells)
+        if len(cells) > 0:
+            prev = cells.previous_siblings
+            print("Cells", cells, prev)
         continue
         status = cells[8].string
         try:
