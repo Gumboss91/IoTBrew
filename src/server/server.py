@@ -81,7 +81,7 @@ def parseDeviceWebsite():
     # Delete old Sensors
     for key in deviselist[:]:
         found = False
-        for devaddr in newdevices
+        for devaddr in newdevices:
             if(deviselist[key]["dev"] == devaddr):
                 found = True
                 break
