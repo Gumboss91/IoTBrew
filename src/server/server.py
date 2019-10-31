@@ -54,6 +54,8 @@ ttl = struct.pack('b', 100)
 server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
 server_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
 server_socket.sendto(bytes("ffff\n\n", "utf-8"), (IP_MULTICAST, PORT_DISCOVERY))
+
+exit()
 while True:
     #if not mqtt_connected:
     #    client.connect(MQTT_BROCKER)
