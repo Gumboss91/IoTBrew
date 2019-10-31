@@ -5,6 +5,8 @@ from coapthon.client.helperclient import HelperClient as CoapClient
 import paho.mqtt.client as mqtt
 import urllib.request
 from bs4 import BeautifulSoup
+import threading
+import time
 
 logging.disable(logging.DEBUG)
 
@@ -27,6 +29,8 @@ MQTT_BROCKER = "127.0.0.1"
 
 mqtt_connected = False
 
+deviselist = []
+
 # MQTT functions
 def mqtt_on_connect(client, userdata, flags, rc):
     global mqtt_connected
@@ -37,7 +41,6 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
     mqtt_connected = False
     print("MQTT Disconnected")
 
-deviselist = []
 # HTTP parse devices
 def parseDeviceWebsite():
     global deviselist
@@ -48,27 +51,56 @@ def parseDeviceWebsite():
     fp.close()
 
     bs = BeautifulSoup(mystr, 'html.parser')
+
+    newdevices = []
+    # Find new Sensors
     for row in bs.findAll('tr'):
         cells = row.findAll('td')
-        if cells[8].string == "OK":
+        status = cells[8].string
+        lastseen = int(cells[7].string)
+        if status == "OK" and lastseen and lastseen < 60*5:
             devaddr = cells[0].string
-            found = False
+            newdevices.append(devaddr)
 
-            for dev in deviselist:
+            found = False
+            for key in deviselist:
+                dev = deviselist[key]
                 if(dev["dev"] == devaddr):
                     found = True
                     break
 
             if(not found):
-                print("New device", devaddr)
-                deviselist.append({"dev": devaddr, "observed": False})
+                print("New sensor device", devaddr)
+                coapclient = CoapClient(server=(caophost, COAP_PORT))
+                resp = coapclient.get(".well-known/core")
+                data = resp.payload
+                print("Data", data)
+                elem = {"dev": devaddr, "coap": coapclient}
+                deviselist.append(elem)
+    
+    # Delete old Sensors
+    for key in deviselist[:]:
+        found = False
+        for devaddr in newdevices
+            if(deviselist[key]["dev"] == devaddr):
+                found = True
+                break
+        
+        if(not found):
+            print("Sensor device lost", deviselist[key]["dev"])
+            deviselist[key]["coap"].cancel_observing(deviselist[key]["coap_response"], True)
+            deviselist.remove(key)
+
+def thread_function(name):
+    while True:
+        parseDeviceWebsite()
+        time.sleep(20)
 
 parseDeviceWebsite()
 exit()
 
-# UDP
-server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
-server_socket.bind((IP_LAN, PORT_DISCOVERY))
+# Start Sensor Discovery
+thread = threading.Thread(target=thread_function, args=(1,), daemon=True)
 
 #client = mqtt.Client()
 #client.on_connect = mqtt_on_connect
@@ -79,6 +111,7 @@ server_socket.bind((IP_LAN, PORT_DISCOVERY))
 while True:
     #if not mqtt_connected:
     #    client.connect(MQTT_BROCKER)
+
 
     print("Waiting for data")
     message, address = server_socket.recvfrom(1024)
