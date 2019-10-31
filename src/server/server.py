@@ -57,27 +57,30 @@ def parseDeviceWebsite():
     for row in bs.findAll('tr'):
         cells = row.findAll('td')
         status = cells[8].string
-        lastseen = int(cells[7].string)
-        if status == "OK" and lastseen and lastseen < 60*5:
-            devaddr = cells[0].string
-            newdevices.append(devaddr)
+        try:
+            lastseen = int(cells[7].string)
+            if status == "OK" and lastseen and lastseen < 60*5:
+                devaddr = cells[0].string
+                newdevices.append(devaddr)
 
-            found = False
-            for key in deviselist:
-                dev = deviselist[key]
-                if(dev["dev"] == devaddr):
-                    found = True
-                    break
+                found = False
+                for key in deviselist:
+                    dev = deviselist[key]
+                    if(dev["dev"] == devaddr):
+                        found = True
+                        break
 
-            if(not found):
-                print("New sensor device", devaddr)
-                coapclient = CoapClient(server=(caophost, COAP_PORT))
-                resp = coapclient.get(".well-known/core")
-                data = resp.payload
-                print("Data", data)
-                elem = {"dev": devaddr, "coap": coapclient}
-                deviselist.append(elem)
-    
+                if(not found):
+                    print("New sensor device", devaddr)
+                    coapclient = CoapClient(server=(caophost, COAP_PORT))
+                    resp = coapclient.get(".well-known/core")
+                    data = resp.payload
+                    print("Data", data)
+                    elem = {"dev": devaddr, "coap": coapclient}
+                    deviselist.append(elem)
+        except ValueError:
+            pass
+        
     # Delete old Sensors
     for key in deviselist[:]:
         found = False
