@@ -83,8 +83,6 @@ def parseDeviceWebsite():
                         print("Data", data)
                         elem = {"dev": devaddr, "coap": coapclient}
                         deviselist.append(elem)
-        except ValueError:
-            pass
 
     # Delete old Sensors
     for key in deviselist[:]:
