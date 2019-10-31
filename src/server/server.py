@@ -63,7 +63,7 @@ def parseDeviceWebsite():
             prev = row.previous_sibling
             if str(prev) == "<h2>Routes</h2>":
                print("Found", cells[0])
-               matches = re.match("<a href=\"route-rm?f\"([0-9:A-F]+)str(prev))
+               matches = re.match("<a href=\"route-rm?f\"([0-9:A-F]+)", str(prev))
                if(matches):
                    print(matches.group(1))
         continue
