@@ -44,7 +44,7 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
 # HTTP parse devices
 def parseDeviceWebsite():
     global deviselist
-    fp = urllib.request.urlopen("http://[bbbb::100]/sensors.html")
+    fp = urllib.request.urlopen("http://[bbbb::100]/network.html")
     mybytes = fp.read()
 
     mystr = mybytes.decode("utf8")
@@ -55,7 +55,7 @@ def parseDeviceWebsite():
     newdevices = []
     # Find new Sensors
     print("Parse 6lbr")
-    pres = bs.findAll('pre', recursive=True).findChildren()
+    pres = bs.findAll('pre', recursive=True)
     print("Pres", pres)
     for row in pres:
         print("Pre", row)
