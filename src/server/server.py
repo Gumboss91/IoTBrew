@@ -62,8 +62,6 @@ def parseDeviceWebsite():
             prev = row.previous_sibling
             if str(prev) == "<h2>Routes</h2>":
                print("Found", cells[0])
-            else:
-                print("Mo-"+str(prev)+"-")
         continue
         status = cells[8].string
         try:
