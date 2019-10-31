@@ -1,6 +1,7 @@
 import socket
 import logging
 import json
+import struct
 import re
 from coapthon.client.helperclient import HelperClient as CoapClient
 import paho.mqtt.client as mqtt
