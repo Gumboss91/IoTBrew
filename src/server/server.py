@@ -59,7 +59,7 @@ def parseDeviceWebsite():
     for row in pres:
         cells = row.findAll('a')
         if len(cells) > 0:
-            prev = cells[0].previous_siblings.string
+            prev = cells[0].previous_sibling
             print("Cells", cells, prev)
         continue
         status = cells[8].string
