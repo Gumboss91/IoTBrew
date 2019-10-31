@@ -54,8 +54,10 @@ def parseDeviceWebsite():
 
     newdevices = []
     # Find new Sensors
-    for row in bs.findAll('tr'):
-        cells = row.findAll('td')
+    for row in bs.findAll('pre'):
+        cells = row.findAll('a')
+        print(cells)
+        continue
         status = cells[8].string
         try:
             lastseen = int(cells[7].string)
@@ -80,7 +82,7 @@ def parseDeviceWebsite():
                     deviselist.append(elem)
         except ValueError:
             pass
-        
+
     # Delete old Sensors
     for key in deviselist[:]:
         found = False
