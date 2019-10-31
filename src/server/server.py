@@ -55,7 +55,9 @@ def parseDeviceWebsite():
     newdevices = []
     # Find new Sensors
     print("Parse 6lbr")
-    for row in bs.findAll('pre'):
+    pres = bs.findAll('pre'):
+    print("Pres", pres)
+    for row in pres:
         print("Pre", row)
         cells = row.findAll('a')
         print("Cells", cells)
