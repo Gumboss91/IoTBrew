@@ -77,7 +77,7 @@ def parseDeviceWebsite():
 
                     if(not found):
                         print("New sensor device", devaddr)
-                        coapclient = CoapClient(server=(caophost, COAP_PORT))
+                        coapclient = CoapClient(server=(devaddr, COAP_PORT))
                         resp = coapclient.get(".well-known/core")
                         data = resp.payload
                         print("Data", data)
