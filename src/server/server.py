@@ -60,7 +60,7 @@ def parseDeviceWebsite():
         cells = row.findAll('a')
         if len(cells) > 0:
             prev = row.previous_sibling
-           if prev == "<h2>Routes</h2>":
+            if prev == "<h2>Routes</h2>":
                print("Found", cells[0])
         continue
         status = cells[8].string
