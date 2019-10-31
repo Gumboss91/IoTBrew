@@ -56,10 +56,10 @@ def parseDeviceWebsite():
     # Find new Sensors
     print("Parse 6lbr")
     pres = bs.findAll('pre', recursive=True)
-    for row in pres:
+    for row in bs.find('pre'):
         cells = row.findAll('a')
         if len(cells) > 0:
-            prev = cells.previous_siblings
+            prev = cells[0].previous_siblings
             print("Cells", cells, prev)
         continue
         status = cells[8].string
