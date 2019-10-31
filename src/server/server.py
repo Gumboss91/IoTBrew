@@ -55,7 +55,7 @@ def parseDeviceWebsite():
     newdevices = []
     # Find new Sensors
     print("Parse 6lbr")
-    pres = bs.findAll('pre', recursive=True)
+    pres = bs.findAll('pre', recursive=True).findChildren()
     print("Pres", pres)
     for row in pres:
         print("Pre", row)
