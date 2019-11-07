@@ -34,8 +34,8 @@ mqtt_connected = False
 
 deviselist = []
 
-def sensor_callback():
-    print("Sensor callback")
+def sensor_callback(response):
+    print("Sensor callback", response.payload)
 
 # MQTT functions
 def mqtt_on_connect(client, userdata, flags, rc):
