@@ -53,6 +53,7 @@ def observeSensor(devaddr, sensors):
         coapclient = CoapClient(server=(devaddr, COAP_PORT))
         resp = coapclient.get(".well-known/core")
         tokens.append(coapclient.observe(url, sensor_callback))
+        break
     return tokens
 
 def connectCoap(devaddr):
