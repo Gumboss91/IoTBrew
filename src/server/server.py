@@ -83,7 +83,7 @@ def parseDeviceWebsite():
                         resp = coapclient.get(".well-known/core")
                         data = resp.payload
                         print("Data", data)
-                        elem = {"dev": devaddr, "coap": coapclient}
+                        elem = {"dev": devaddr, "coap": coapclient, "response": resp}
                         deviselist.append(elem)
 
     # Delete old Sensors
@@ -100,12 +100,19 @@ def parseDeviceWebsite():
             deviselist[key]["coap"].cancel_observing(deviselist[key]["coap_response"], True)
             deviselist.remove(key)
 
+def closeConnections():
+    global deviselist
+    for dev in deviselist:
+        dev["coap"].close()
+
+
 def thread_function(name):
     while True:
         parseDeviceWebsite()
         time.sleep(20)
 
 parseDeviceWebsite()
+closeConnections()
 exit()
 
 # Start Sensor Discovery
