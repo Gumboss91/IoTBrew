@@ -44,6 +44,44 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
     mqtt_connected = False
     print("MQTT Disconnected")
 
+def connectCoap(devaddr):
+    coapclient = CoapClient(server=(devaddr, COAP_PORT))
+    resp = coapclient.get(".well-known/core")
+    data = resp.payload
+
+    sensors = []
+    for elem in elems:
+        props = elem.split(";")
+        observable = False
+        for prop in props:
+            if prop == "obs":
+                observable = True
+                break
+
+        if observable:
+            url = props[0][1:-1]
+            sensors.append(url)
+    print(devaddr, sensors)
+    return {"dev": devaddr, "coap": coapclient, "response": resp, "sensors": sensors}
+
+def parseDevice(devaddr, newdevices):
+    global deviselist
+    newdevices.append(devaddr)
+
+    found = False
+    for key in deviselist:
+        dev = deviselist[key]
+        if(dev["dev"] == devaddr):
+            found = True
+            break
+
+    if(not found):
+        print("New sensor device", devaddr)   
+        elem = connectCoap(devaddr)
+        deviselist.append(elem)
+
+    return newdevices
+
 # HTTP parse devices
 def parseDeviceWebsite():
     global deviselist
@@ -68,25 +106,8 @@ def parseDeviceWebsite():
                 matches = re.match("<a href=\"route-rm\?(.*)\"", str(cells[0]))
                 if(matches):     
                     devaddr = matches.group(1)
-                    newdevices.append(devaddr)
-
-                    found = False
-                    for key in deviselist:
-                        dev = deviselist[key]
-                        if(dev["dev"] == devaddr):
-                            found = True
-                            break
-
-                    if(not found):
-                        print("New sensor device", devaddr)
-                        coapclient = CoapClient(server=(devaddr, COAP_PORT))
-                        resp = coapclient.get(".well-known/core")
-                        data = resp.payload
-                        print("Data", data)
-                        elems = data.split(",")
-                        print("Elems", elems)
-                        elem = {"dev": devaddr, "coap": coapclient, "response": resp}
-                        deviselist.append(elem)
+                    newdevices = parseDevice(devaddr, newdevices)
+                    deviselist.append(elem)
 
     # Delete old Sensors
     for key, dnu in enumerate(deviselist[:]):
