@@ -150,6 +150,7 @@ def thread_function(name):
         time.sleep(20)
 
 parseDeviceWebsite()
+time.sleep(200)
 closeConnections()
 exit()
 
