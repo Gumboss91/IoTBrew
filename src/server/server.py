@@ -83,7 +83,7 @@ def parseDeviceWebsite():
                         resp = coapclient.get(".well-known/core")
                         data = resp.payload
                         print("Data", data)
-                        elems = data.split(";")
+                        elems = data.split(",")
                         print("Elems", elems)
                         elem = {"dev": devaddr, "coap": coapclient, "response": resp}
                         deviselist.append(elem)
