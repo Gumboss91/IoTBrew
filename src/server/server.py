@@ -49,6 +49,8 @@ def connectCoap(devaddr):
     resp = coapclient.get(".well-known/core")
     data = resp.payload
 
+    elem = data.split(",")
+
     sensors = []
     for elem in elems:
         props = elem.split(";")
