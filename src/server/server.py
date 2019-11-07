@@ -83,13 +83,14 @@ def parseDeviceWebsite():
                         resp = coapclient.get(".well-known/core")
                         data = resp.payload
                         print("Data", data)
+                        elems = data.split(";")
+                        print("Elems", elems)
                         elem = {"dev": devaddr, "coap": coapclient, "response": resp}
                         deviselist.append(elem)
 
     # Delete old Sensors
     for key, dnu in enumerate(deviselist[:]):
         found = False
-        print(key, deviselist[key])
         for devaddr in newdevices:
             if(deviselist[key]["dev"] == devaddr):
                 found = True
