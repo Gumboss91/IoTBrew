@@ -109,7 +109,7 @@ parseDeviceWebsite()
 exit()
 
 # Start Sensor Discovery
-thread = threading.Thread(target=thread_function, args=(1,), daemon=True)
+#thread = threading.Thread(target=thread_function, args=(1,), daemon=True)
 
 #client = mqtt.Client()
 #client.on_connect = mqtt_on_connect
