@@ -109,7 +109,6 @@ def parseDeviceWebsite():
                 if(matches):     
                     devaddr = matches.group(1)
                     newdevices = parseDevice(devaddr, newdevices)
-                    deviselist.append(elem)
 
     # Delete old Sensors
     for key, dnu in enumerate(deviselist[:]):
