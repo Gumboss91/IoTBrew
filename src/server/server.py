@@ -87,7 +87,7 @@ def parseDeviceWebsite():
                         deviselist.append(elem)
 
     # Delete old Sensors
-    for key in deviselist[:]:
+    for key, dnu in enumerate(deviselist[:]):
         found = False
         print(key, deviselist[key])
         for devaddr in newdevices:
