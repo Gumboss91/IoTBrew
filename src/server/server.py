@@ -77,7 +77,7 @@ def connectCoap(devaddr):
     print(devaddr, sensors)
     coapclient.close()
 
-    observed = observeSensor(sensors)
+    observed = observeSensor(devaddr, sensors)
     return {"dev": devaddr, "response": resp, "observed": observed}
 
 def parseDevice(devaddr, newdevices):
