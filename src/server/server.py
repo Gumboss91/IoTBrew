@@ -22,7 +22,7 @@ urls = [
 
 IP_6LBR = "bbbb::100"
 IP_LAN = "bbbb::200"
-IP_MULTICAST = "ff01::1"
+IP_MULTICAST = "ff02::1"
 PORT_6LBR = 3000
 
 COAP_PORT = 5683
@@ -119,7 +119,9 @@ thread = threading.Thread(target=thread_function, args=(1,), daemon=True)
 ttl = struct.pack('b', 100)
 server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
 server_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
-server_socket.sendto(bytes("ffff\n\n"), (IP_MULTICAST, PORT_DISCOVERY))
+server_socket.sendto(bytes("ffff\n\n", "utf-8"), (IP_MULTICAST, PORT_DISCOVERY))
+
+exit()
 while True:
     #if not mqtt_connected:
     #    client.connect(MQTT_BROCKER)
