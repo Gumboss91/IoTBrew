@@ -34,6 +34,9 @@ mqtt_connected = False
 
 deviselist = []
 
+def sensor_callback():
+    print("Sensor callback")
+
 # MQTT functions
 def mqtt_on_connect(client, userdata, flags, rc):
     global mqtt_connected
@@ -43,6 +46,14 @@ def mqtt_on_connect(client, userdata, flags, rc):
 def mqtt_on_disconnect(client, userdata, flags, rc):
     mqtt_connected = False
     print("MQTT Disconnected")
+
+def observeSensor(sensors):
+    tokens = list()
+    for url in sensors:
+        coapclient = CoapClient(server=(devaddr, COAP_PORT))
+        resp = coapclient.get(".well-known/core")
+        tokens.append(coapclient.observe(url, sensor_callback))
+    return tokens
 
 def connectCoap(devaddr):
     coapclient = CoapClient(server=(devaddr, COAP_PORT))
@@ -64,7 +75,10 @@ def connectCoap(devaddr):
             url = props[0][1:-1]
             sensors.append(url)
     print(devaddr, sensors)
-    return {"dev": devaddr, "coap": coapclient, "response": resp, "sensors": sensors}
+    coapclient.close()
+
+    observed = observeDevice(sensors)
+    return {"dev": devaddr, "response": resp, "observed": observed}
 
 def parseDevice(devaddr, newdevices):
     global deviselist
