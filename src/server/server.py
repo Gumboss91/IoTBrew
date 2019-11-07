@@ -47,7 +47,7 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
     mqtt_connected = False
     print("MQTT Disconnected")
 
-def observeSensor(sensors):
+def observeSensor(devaddr, sensors):
     tokens = list()
     for url in sensors:
         coapclient = CoapClient(server=(devaddr, COAP_PORT))
