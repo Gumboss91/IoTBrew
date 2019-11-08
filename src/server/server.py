@@ -164,6 +164,7 @@ def thread_function(name):
         time.sleep(20)
 
 observeSensor("fd00::212:4b00:689:c90d", ["/sen/readings/hum"])
+enableSleepMode("fd00::212:4b00:689:c90d")
 #parseDeviceWebsite()
 time.sleep(400)
 closeConnections()
