@@ -51,7 +51,7 @@ def enableSleepMode(devaddr):
     coapclient = CoapClient(server=(devaddr, COAP_PORT))
     payload = 'mode=1'
     coapclient.post("very_sleepy_config", payload)
-    coapclient.close()
+    #coapclient.close()
     print(devaddr, "Sleep mode")
 
 def observeSensor(devaddr, sensors):
@@ -163,12 +163,12 @@ def thread_function(name):
         parseDeviceWebsite()
         time.sleep(20)
 
-observeSensor("fd00::212:4b00:689:c90d", ["/sen/readings/hum"])
 enableSleepMode("fd00::212:4b00:689:c90d")
+observeSensor("fd00::212:4b00:689:c90d", ["/sen/readings/hum"])
 #parseDeviceWebsite()
 time.sleep(400)
-closeConnections()
-exit()
+#closeConnections()
+#exit()
 
 # Start Sensor Discovery
 #thread = threading.Thread(target=thread_function, args=(1,), daemon=True)
