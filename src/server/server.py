@@ -166,7 +166,7 @@ def thread_function(name):
 enableSleepMode("fd00::212:4b00:689:c90d")
 observeSensor("fd00::212:4b00:689:c90d", ["/sen/readings/hum"])
 #parseDeviceWebsite()
-time.sleep(400)
+#time.sleep(400)
 #closeConnections()
 #exit()
 
@@ -179,33 +179,33 @@ time.sleep(400)
 
 #client.loop_start()
 
-ttl = struct.pack('b', 100)
-server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
-server_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
-server_socket.sendto(bytes("ffff\n\n", "utf-8"), (IP_MULTICAST, PORT_DISCOVERY))
+#ttl = struct.pack('b', 100)
+#server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+#server_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
+#server_socket.sendto(bytes("ffff\n\n", "utf-8"), (IP_MULTICAST, PORT_DISCOVERY))
 
-exit()
-while True:
+#exit()
+#while True:
     #if not mqtt_connected:
     #    client.connect(MQTT_BROCKER)
 
 
-    print("Waiting for data")
-    message, address = server_socket.recvfrom(1024)
-    print("UDP received, starting coap", address[0])
-    caophost = address[0]
-
-    #for url in urls:
-    #    coapclient = CoapClient(server=(caophost, COAP_PORT))
-    #    response = coapclient.get(url, timeout=20)
-    #    if(response):
-    #        print("Received", response.pretty_print())
-    #        if mqtt_connected:
-    #            elem = response.payload
-    #            client.publish("6lopawan/sensor/" + caophost + "/" + url, elem)
-    #            print("Publish:", elem)
-    #        else:
-    #            print("No MQTT connection", mqtt_connected)
-    #    else:
-    #        print("Coap Timeout")
-    #    coapclient.stop()
+#    print("Waiting for data")
+#    message, address = server_socket.recvfrom(1024)
+#    print("UDP received, starting coap", address[0])
+#    caophost = address[0]
+#
+#    #for url in urls:
+#    #    coapclient = CoapClient(server=(caophost, COAP_PORT))
+#    #    response = coapclient.get(url, timeout=20)
+#    #    if(response):
+#    #        print("Received", response.pretty_print())
+#    #        if mqtt_connected:
+#    #            elem = response.payload
+#    #            client.publish("6lopawan/sensor/" + caophost + "/" + url, elem)
+#    #            print("Publish:", elem)
+#    #        else:
+#    #            print("No MQTT connection", mqtt_connected)
+#    #    else:
+#    #        print("Coap Timeout")
+#    #    coapclient.stop()
