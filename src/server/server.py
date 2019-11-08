@@ -56,6 +56,7 @@ def enableSleepMode(devaddr):
 def observeSensor(devaddr, sensors):
     tokens = list()
     for url in sensors:
+        print("Observe Coap", devaddr, url)
         coapclient = CoapClient(server=(devaddr, COAP_PORT))
         resp = coapclient.get(".well-known/core")
         tokens.append(coapclient.observe(url, sensor_callback))
@@ -64,29 +65,33 @@ def observeSensor(devaddr, sensors):
 
 def connectCoap(devaddr):
     coapclient = CoapClient(server=(devaddr, COAP_PORT))
+    print("Discover Coap", devaddr)
     resp = coapclient.get(".well-known/core")
-    data = resp.payload
+    if(resp):
+        data = resp.payload
 
-    elems = data.split(",")
+        elems = data.split(",")
 
-    sensors = []
-    for elem in elems:
-        props = elem.split(";")
-        observable = False
-        for prop in props:
-            if prop == "obs":
-                observable = True
-                break
+        sensors = []
+        for elem in elems:
+            props = elem.split(";")
+            observable = False
+            for prop in props:
+                if prop == "obs":
+                    observable = True
+                    break
 
-        if observable:
-            url = props[0][1:-1]
-            sensors.append(url)
-    print(devaddr, sensors)
-    coapclient.close()
+            if observable:
+                url = props[0][1:-1]
+                sensors.append(url)
+        print(devaddr, sensors)
+        coapclient.close()
 
-    observed = observeSensor(devaddr, sensors)
-    # Enable sleep mode
-    return {"dev": devaddr, "response": resp, "observed": observed}
+        observed = observeSensor(devaddr, sensors)
+        # Enable sleep mode
+        return {"dev": devaddr, "response": resp, "observed": observed}
+    else:
+        return {"dev": devaddr, "response": None, "observed": None}
 
 def parseDevice(devaddr, newdevices):
     global deviselist
