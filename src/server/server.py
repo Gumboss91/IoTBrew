@@ -88,7 +88,8 @@ def connectCoap(devaddr):
         coapclient.close()
 
         observed = observeSensor(devaddr, sensors)
-        # Enable sleep mode
+        enableSleepMode(devaddr)
+
         return {"dev": devaddr, "response": resp, "observed": observed}
     else:
         return {"dev": devaddr, "response": None, "observed": None}
