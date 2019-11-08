@@ -47,6 +47,12 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
     mqtt_connected = False
     print("MQTT Disconnected")
 
+def enableSleepMode(devaddr):
+    coapclient = CoapClient(server=(devaddr, COAP_PORT))
+    payload = 'mode=1'
+    coapclient.post("very_sleepy_config", payload)
+    coapclient.close()
+
 def observeSensor(devaddr, sensors):
     tokens = list()
     for url in sensors:
@@ -79,6 +85,7 @@ def connectCoap(devaddr):
     coapclient.close()
 
     observed = observeSensor(devaddr, sensors)
+    # Enable sleep mode
     return {"dev": devaddr, "response": resp, "observed": observed}
 
 def parseDevice(devaddr, newdevices):
