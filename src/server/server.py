@@ -163,7 +163,7 @@ def thread_function(name):
         parseDeviceWebsite()
         time.sleep(20)
 
-observeSensor("fd00::212:4b00:689:c90d", "/sen/readings/hum")
+observeSensor("fd00::212:4b00:689:c90d", ["/sen/readings/hum"])
 #parseDeviceWebsite()
 time.sleep(400)
 closeConnections()
