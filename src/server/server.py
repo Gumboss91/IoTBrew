@@ -52,6 +52,7 @@ def enableSleepMode(devaddr):
     payload = 'mode=1'
     coapclient.post("very_sleepy_config", payload)
     coapclient.close()
+    print(devaddr, "Sleep mode")
 
 def observeSensor(devaddr, sensors):
     tokens = list()
