@@ -56,7 +56,6 @@ def getRessources(devaddr):
             if observable:
                 url = props[0][1:-1]
                 ressources.append(url)
-        print(devaddr, ressources)
         coapclient.close()
     return ressources
 
@@ -87,17 +86,17 @@ while True:
         sensor_res_cache[caophost] = getRessources(caophost)
 
     print("Cached", sensor_res_cache[caophost])
-    #for url in urls:
-    #    coapclient = CoapClient(server=(caophost, COAP_PORT))
-    #    response = coapclient.get(url, timeout=20)
-    #    if(response):
-    #        print("Received", response.pretty_print())
-    #        if mqtt_connected:
-    #            elem = response.payload
-    #            client.publish("6lopawan/sensor/" + caophost + "/" + url, elem)
-    #            print("Publish:", elem)
-    #        else:
-    #            print("No MQTT connection", mqtt_connected)
-    #    else:
-    #        print("Coap Timeout")
-    #    coapclient.stop()
+    for url in sensor_res_cache[caophost]:
+        coapclient = CoapClient(server=(caophost, COAP_PORT))
+        response = coapclient.get(url, timeout=20)
+        if(response):
+            print("Received", response.pretty_print())
+            if mqtt_connected:
+                elem = response.payload
+                client.publish("6lopawan/sensor/" + caophost + "/" + url, elem)
+                print("Publish:", elem)
+            else:
+                print("No MQTT connection", mqtt_connected)
+        else:
+            print("Coap Timeout")
+        coapclient.stop()
