@@ -164,7 +164,7 @@ def thread_function(name):
         time.sleep(20)
 
 #enableSleepMode("fd00::212:4b00:689:c90d")
-observeSensor("fd00::212:4b00:689:c90d", ["/sen/readings/hum"])
+#observeSensor("fd00::212:4b00:689:c90d", ["/sen/readings/hum"])
 #parseDeviceWebsite()
 #time.sleep(400)
 #closeConnections()
@@ -173,11 +173,11 @@ observeSensor("fd00::212:4b00:689:c90d", ["/sen/readings/hum"])
 # Start Sensor Discovery
 #thread = threading.Thread(target=thread_function, args=(1,), daemon=True)
 
-#client = mqtt.Client()
-#client.on_connect = mqtt_on_connect
-#client.on_disconnect = mqtt_on_disconnect
+client = mqtt.Client()
+client.on_connect = mqtt_on_connect
+client.on_disconnect = mqtt_on_disconnect
 
-#client.loop_start()
+client.loop_start()
 
 #ttl = struct.pack('b', 100)
 #server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
