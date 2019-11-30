@@ -34,6 +34,30 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
     mqtt_connected = False
     print("MQTT Disconnected")
 
+def getRessources(devaddr):
+    coapclient = CoapClient(server=(devaddr, COAP_PORT))
+    print("Discover Coap", devaddr)
+    resp = coapclient.get(".well-known/core")
+    elems = []
+    if(resp):
+        data = resp.payload
+
+        elems = data.split(",")    
+        for elem in elems:
+            props = elem.split(";")
+            observable = False
+            for prop in props:
+                if prop == "obs":
+                    observable = True
+                    break
+
+            if observable:
+                url = props[0][1:-1]
+                elems.append(url)
+        print(devaddr, elems)
+        coapclient.close()
+    return elems
+
 # Announce our route to 6lbr
 client_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM) # UDP
 client_socket.sendto(bytes("1\n\n", "utf-8"), (IP_6LBR, PORT_6LBR))
@@ -57,6 +81,7 @@ while True:
     print("UDP received, starting coap", address[0])
     caophost = address[0]
 
+    getRessources(caophost)
     #for url in urls:
     #    coapclient = CoapClient(server=(caophost, COAP_PORT))
     #    response = coapclient.get(url, timeout=20)
