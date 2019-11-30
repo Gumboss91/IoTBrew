@@ -93,8 +93,8 @@ while True:
 
     if(caophost not in sensor_res_cache):
         sensor_res_cache[caophost] = getRessources(caophost)
+        configureSleep(caophost)
         
-    configureSleep(caophost)
 
     print("Cached", sensor_res_cache[caophost])
     for url in sensor_res_cache[caophost]:
