@@ -38,7 +38,7 @@ def getRessources(devaddr):
     coapclient = CoapClient(server=(devaddr, COAP_PORT))
     print("Discover Coap", devaddr)
     resp = coapclient.get(".well-known/core")
-    elems = []
+    ressources = []
     if(resp):
         data = resp.payload
 
@@ -53,10 +53,10 @@ def getRessources(devaddr):
 
             if observable:
                 url = props[0][1:-1]
-                elems.append(url)
-        print(devaddr, elems)
+                ressources.append(url)
+        print(devaddr, ressources)
         coapclient.close()
-    return elems
+    return ressources
 
 # Announce our route to 6lbr
 client_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM) # UDP
