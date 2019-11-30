@@ -24,6 +24,8 @@ MQTT_BROCKER = "127.0.0.1"
 
 mqtt_connected = False
 
+sensor_res_cache = {}
+
 # MQTT functions
 def mqtt_on_connect(client, userdata, flags, rc):
     global mqtt_connected
@@ -81,7 +83,10 @@ while True:
     print("UDP received, starting coap", address[0])
     caophost = address[0]
 
-    getRessources(caophost)
+    if(caophost not in sensor_res_cache):
+        sensor_res_cache[caophost] = getRessources(caophost)
+
+    print("Cached", sensor_res_cache[caophost])
     #for url in urls:
     #    coapclient = CoapClient(server=(caophost, COAP_PORT))
     #    response = coapclient.get(url, timeout=20)
