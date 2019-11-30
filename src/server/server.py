@@ -62,6 +62,7 @@ def getRessources(devaddr):
 def configureSleep(devaddr):
     coapclient = CoapClient(server=(devaddr, COAP_PORT))
     resp = coapclient.post("very_sleepy_config", "mode=1&interval="+str(SENSOR_OFFTIME)+"&duration="+str(SENSOR_ONTIME))
+    print("Received", resp.pretty_print())
     coapclient.close()
 
 # Announce our route to 6lbr
