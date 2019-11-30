@@ -15,15 +15,15 @@ urls = [
 ]
 
 IP_6LBR = "bbbb::100"
+MQTT_BROCKER = "127.0.0.1"
 PORT_6LBR = 3000
-
 COAP_PORT = 5683
 PORT_DISCOVERY = 3001
 
-MQTT_BROCKER = "127.0.0.1"
+SENSOR_ONTIME=11
+SENSOR_OFFTIME=60
 
 mqtt_connected = False
-
 sensor_res_cache = {}
 
 # MQTT functions
@@ -59,6 +59,11 @@ def getRessources(devaddr):
         coapclient.close()
     return ressources
 
+def configureSleep(devaddr):
+    coapclient = CoapClient(server=(devaddr, COAP_PORT))
+    resp = coapclient.post("very_sleepy_config", "mode=1&interval="+str(SENSOR_OFFTIME)+"&duration="+str(SENSOR_ONTIME))
+    coapclient.close()
+
 # Announce our route to 6lbr
 client_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM) # UDP
 client_socket.sendto(bytes("1\n\n", "utf-8"), (IP_6LBR, PORT_6LBR))
@@ -85,6 +90,8 @@ while True:
 
     if(caophost not in sensor_res_cache):
         sensor_res_cache[caophost] = getRessources(caophost)
+        
+    configureSleep(caophost)
 
     print("Cached", sensor_res_cache[caophost])
     for url in sensor_res_cache[caophost]:
