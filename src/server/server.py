@@ -67,15 +67,16 @@ client_socket.sendto(bytes("1\n\n", "utf-8"), (IP_6LBR, PORT_6LBR))
 server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
 server_socket.bind(('', PORT_DISCOVERY))
 
-#client = mqtt.Client()
-#client.on_connect = mqtt_on_connect
-#client.on_disconnect = mqtt_on_disconnect
+client = mqtt.Client()
+client.on_connect = mqtt_on_connect
+client.on_disconnect = mqtt_on_disconnect
 
-#client.loop_start()
+client.loop_start()
 
 while True:
-    #if not mqtt_connected:
-    #    client.connect(MQTT_BROCKER)
+    if not mqtt_connected:
+        print("Reconnecting MQTT")
+        client.connect(MQTT_BROCKER)
 
     print("Waiting for data")
     message, address = server_socket.recvfrom(1024)
@@ -90,7 +91,7 @@ while True:
         coapclient = CoapClient(server=(caophost, COAP_PORT))
         response = coapclient.get(url, timeout=20)
         if(response):
-            print("Received", response.pretty_print())
+            #print("Received", response.pretty_print())
             if mqtt_connected:
                 elem = response.payload
                 client.publish("6lopawan/sensor/" + caophost + "/" + url, elem)
