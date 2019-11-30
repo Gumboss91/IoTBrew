@@ -39,7 +39,7 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
 def getRessources(devaddr):
     coapclient = CoapClient(server=(devaddr, COAP_PORT))
     print("Discover Coap", devaddr)
-    resp = coapclient.get(".well-known/core")
+    resp = coapclient.get(".well-known/core", timeout=20)
     ressources = []
     if(resp):
         data = resp.payload
