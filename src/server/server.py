@@ -87,7 +87,7 @@ def init_influxdb_database():
 def influxdb_sendSensorData(influxdb_client, sensor, data):
     for value_name in data:
         print(value_name)
-        print(data[value_name])
+        #print(data[value_name])
         json_body = [
             {
                 'measurement': value_name,
