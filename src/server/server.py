@@ -78,7 +78,7 @@ def configureSleep(devaddr):
     coapclient.close()
 
 # Influxdb
-def init_influxdb_database():
+def init_influxdb_database(influxdb_client):
     databases = influxdb_client.get_list_database()
     if len(list(filter(lambda x: x['name'] == INFLUXDB_DATABASE, databases))) == 0:
         influxdb_client.create_database(INFLUXDB_DATABASE)
@@ -126,7 +126,7 @@ while True:
     if not influxdb_connected and USE_INFLUXDB:
         print("Connect to Influxdb")
         influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS, 8086, INFLUXDB_USER, INFLUXDB_PASSWORD, None)
-        init_influxdb_database()
+        init_influxdb_database(influxdb_client)
         influxdb_connected = True
 
     print("Waiting for data")
