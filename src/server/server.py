@@ -85,10 +85,8 @@ def init_influxdb_database():
     influxdb_client.switch_database(INFLUXDB_DATABASE)
 
 def influxdb_sendSensorData(influxdb_client, sensor, data):
-    for value_name in data:
-        print("Loop", value_name)
-        break
-        #print(data[value_name])
+    jsondata = json.loads(data)
+    for value_name in jsondata:
         json_body = [
             {
                 'measurement': value_name,
@@ -96,8 +94,8 @@ def influxdb_sendSensorData(influxdb_client, sensor, data):
                     'location': sensor
                 },
                 'fields': {
-                    'value': data[value_name]["v"],
-                    'unit': data[value_name]["u"],
+                    'value': jsondata[value_name]["v"],
+                    'unit': jsondata[value_name]["u"],
                 }
             }
         ]
