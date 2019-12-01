@@ -108,12 +108,14 @@ client_socket.sendto(bytes("1\n\n", "utf-8"), (IP_6LBR, PORT_6LBR))
 server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
 server_socket.bind(('', PORT_DISCOVERY))
 
-client = mqtt.Client()
-client.on_connect = mqtt_on_connect
-client.on_disconnect = mqtt_on_disconnect
-client.loop_start()
-
+client = None
 influxdb_client = None
+
+if USE_MQTT:
+    client = mqtt.Client()
+    client.on_connect = mqtt_on_connect
+    client.on_disconnect = mqtt_on_disconnect
+    client.loop_start()
 
 while True:
     if not mqtt_connected and USE_MQTT:
