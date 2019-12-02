@@ -1,6 +1,7 @@
 import socket
 import logging
 import json
+import datetime
 from coapthon.client.helperclient import HelperClient as CoapClient
 import paho.mqtt.client as mqtt
 from influxdb import InfluxDBClient
@@ -13,6 +14,7 @@ PORT_6LBR = 3000
 
 # Sensor Settings
 COAP_PORT = 5683
+COAP_TIMEOUT=5
 PORT_DISCOVERY = 3001
 SENSOR_ONTIME=11
 SENSOR_OFFTIME=60*4
@@ -49,7 +51,7 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
 def getRessources(devaddr):
     coapclient = CoapClient(server=(devaddr, COAP_PORT))
     print("Discover Coap", devaddr)
-    resp = coapclient.get(".well-known/core", timeout=20)
+    resp = coapclient.get(".well-known/core", timeout=COAP_TIMEOUT)
     ressources = []
     if(resp):
         data = resp.payload
@@ -71,10 +73,8 @@ def getRessources(devaddr):
 
 def configureSleep(devaddr):
     coapclient = CoapClient(server=(devaddr, COAP_PORT))
-    resp = coapclient.get("very_sleepy_config", timeout=20)
-    print("Received", resp.pretty_print(), resp, dir(resp))
+    resp = coapclient.get("very_sleepy_config", timeout=COAP_TIMEOUT)
     resp = coapclient.post("very_sleepy_config", "mode=1&interval="+str(SENSOR_OFFTIME)+"&duration="+str(SENSOR_ONTIME))
-    print("Received", resp.pretty_print(), resp, dir(resp))
     coapclient.close()
 
 # Influxdb
@@ -129,6 +129,7 @@ while True:
         init_influxdb_database(influxdb_client)
         influxdb_connected = True
 
+    print(datetime.datetime.now())
     print("Waiting for data")
     message, address = server_socket.recvfrom(1024)
     print("UDP received, starting coap", address[0])
@@ -141,9 +142,8 @@ while True:
     print("Cached", sensor_res_cache[caophost])
     for url in sensor_res_cache[caophost]:
         coapclient = CoapClient(server=(caophost, COAP_PORT))
-        response = coapclient.get(url, timeout=20)
+        response = coapclient.get(url, timeout=COAP_TIMEOUT)
         if(response):
-            #print("Received", response.pretty_print())
             if influxdb_connected:
                 influxdb_sendSensorData(influxdb_client, caophost, response.payload)
                 print("Store:", response.payload)
@@ -155,3 +155,5 @@ while True:
         else:
             print("Coap Timeout")
         coapclient.stop()
+        coapclient = None
+        del(coapclient)
