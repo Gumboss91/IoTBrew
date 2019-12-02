@@ -68,14 +68,16 @@ def getRessources(devaddr):
             if observable:
                 url = props[0][1:-1]
                 ressources.append(url)
-        coapclient.close()
+    coapclient.close()
+    del(coapclient)
     return ressources
 
 def configureSleep(devaddr):
     coapclient = CoapClient(server=(devaddr, COAP_PORT))
     resp = coapclient.get("very_sleepy_config", timeout=COAP_TIMEOUT)
-    resp = coapclient.post("very_sleepy_config", "mode=1&interval="+str(SENSOR_OFFTIME)+"&duration="+str(SENSOR_ONTIME))
+    resp = coapclient.post("very_sleepy_config", "mode=1&interval="+str(SENSOR_OFFTIME)+"&duration="+str(SENSOR_ONTIME), timeout=COAP_TIMEOUT)
     coapclient.close()
+    del(coapclient)
 
 # Influxdb
 def init_influxdb_database(influxdb_client):
@@ -155,5 +157,4 @@ while True:
         else:
             print("Coap Timeout")
         coapclient.stop()
-        coapclient = None
         del(coapclient)
