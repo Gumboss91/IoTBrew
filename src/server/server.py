@@ -74,6 +74,7 @@ def getRessources(devaddr):
     return ressources
 
 def configureSleep(devaddr):
+    print("Configure sleep")
     coapclient = CoapClient(server=(devaddr, COAP_PORT))
     resp = coapclient.get("very_sleepy_config", timeout=COAP_TIMEOUT)
     resp = coapclient.post("very_sleepy_config", "mode=1&interval="+str(SENSOR_OFFTIME)+"&duration="+str(SENSOR_ONTIME), timeout=COAP_TIMEOUT)
