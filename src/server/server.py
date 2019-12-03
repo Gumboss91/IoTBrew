@@ -6,7 +6,7 @@ from coapthon.client.helperclient import HelperClient as CoapClient
 import paho.mqtt.client as mqtt
 from influxdb import InfluxDBClient
 
-logging.disable(logging.DEBUG)
+logging.enable(logging.DEBUG)
 
 # 6LoPaWAN
 IP_6LBR = "bbbb::100"
@@ -154,8 +154,6 @@ while True:
             if mqtt_connected:
                 client.publish("6lopawan/sensor/" + caophost + "/" + url, response.payload)
                 print("Publish:", response.payload)
-            else:
-                print("No MQTT connection", mqtt_connected)
         else:
             print("Coap Timeout")
         coapclient.stop()
