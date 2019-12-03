@@ -6,7 +6,7 @@ from coapthon.client.helperclient import HelperClient as CoapClient
 import paho.mqtt.client as mqtt
 from influxdb import InfluxDBClient
 
-logging.enable(logging.DEBUG)
+#logging.enable(logging.DEBUG)
 
 # 6LoPaWAN
 IP_6LBR = "bbbb::100"
