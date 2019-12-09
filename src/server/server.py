@@ -5,6 +5,7 @@ import datetime
 from coapthon.client.helperclient import HelperClient as CoapClient
 import paho.mqtt.client as mqtt
 from influxdb import InfluxDBClient
+import influxdb
 
 logging.disable(logging.DEBUG)
 
@@ -65,7 +66,8 @@ def getRessources(devaddr):
                     observable = True
                     break
 
-            if observable:
+            if True:
+            #if observable:
                 url = props[0][1:-1]
                 ressources.append(url)
     coapclient.stop()
@@ -135,6 +137,7 @@ while True:
             init_influxdb_database(influxdb_client)
             influxdb_connected = True
         except influxdb.exceptions.InfluxDBServerError:
+            print("Connection failed")
             influxdb_connected = False
 
     print(datetime.datetime.now())
@@ -157,6 +160,7 @@ while True:
                     influxdb_sendSensorData(influxdb_client, caophost, response.payload)
                     print("Store:", response.payload)
                 except influxdb.exceptions.InfluxDBServerError:
+                    print("Influx data storage failed")
                     influxdb_connected = False
             if mqtt_connected:
                 client.publish("6lopawan/sensor/" + caophost + "/" + url, response.payload)
