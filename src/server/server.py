@@ -171,7 +171,8 @@ while True:
         if(dev_res["raw"] != sensor_res_cache[caophost]["raw"] \
           or dev_cfg != sensor_res_cache[caophost]["cfg"]):
             print("Cache invalid, reconfigure")
-            sensor_res_cache[caophost] = dev_conf
+            sensor_res_cache[caophost] = dev_res
+            sensor_res_cache[caophost]["cfg"] = dev_cfg
             configureSleep(caophost)
         
     print("Cached", sensor_res_cache[caophost])
