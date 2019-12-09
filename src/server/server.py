@@ -161,7 +161,7 @@ while True:
     print("UDP received, starting coap", address[0])
     caophost = address[0]
 
-    if(caophost not in sensor_res_cache or len(sensor_res_cache[caophost]) < 1):
+    if(caophost not in sensor_res_cache or len(sensor_res_cache[caophost]["res"]) < 1):
         sensor_res_cache[caophost] = getRessources(caophost)
         sensor_res_cache[caophost]["cfg"] = getConfig(caophost)
         configureSleep(caophost)
