@@ -75,9 +75,7 @@ def getRessources(devaddr):
             if observable:
                 url = props[0][1:-1]
                 ressources.append(url)
-    coapclient.stop()
-    coapclient.close()
-    del(coapclient)
+                
     return {"res": ressources, "raw": resp}
 
 def configureSleep(devaddr):
