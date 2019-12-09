@@ -48,14 +48,20 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
     mqtt_connected = False
     print("MQTT Disconnected")
 
+def getWellknown(devaddr):
+    oapclient = CoapClient(server=(devaddr, COAP_PORT))
+    resp = coapclient.get(".well-known/core", timeout=COAP_TIMEOUT)
+    coapclient.stop()
+    coapclient.close()
+    del(coapclient)
+    return resp.payload
+
 # Sensor Functions
 def getRessources(devaddr):
-    coapclient = CoapClient(server=(devaddr, COAP_PORT))
-    print("Discover Coap", devaddr)
-    resp = coapclient.get(".well-known/core", timeout=COAP_TIMEOUT)
+    resp = getWellknown(devaddr)
     ressources = []
     if(resp):
-        data = resp.payload
+        data = resp
 
         elems = data.split(",")    
         for elem in elems:
@@ -66,14 +72,13 @@ def getRessources(devaddr):
                     observable = True
                     break
 
-            if True:
-            #if observable:
+            if observable:
                 url = props[0][1:-1]
                 ressources.append(url)
     coapclient.stop()
     coapclient.close()
     del(coapclient)
-    return ressources
+    return {"res": ressources, "raw": resp}
 
 def configureSleep(devaddr):
     print("Configure sleep")
@@ -149,9 +154,15 @@ while True:
     if(caophost not in sensor_res_cache or len(sensor_res_cache[caophost]) < 1):
         sensor_res_cache[caophost] = getRessources(caophost)
         configureSleep(caophost)
+    else:
+        dev_conf = getRessources(caophost)
+        if(dev_conf["raw"] != sensor_res_cache[caophost]["raw"]):
+            print("Cache invalid, reconfigure")
+            sensor_res_cache[caophost] = dev_conf
+            configureSleep(caophost)
         
     print("Cached", sensor_res_cache[caophost])
-    for url in sensor_res_cache[caophost]:
+    for url in sensor_res_cache[caophost]["res"]:
         coapclient = CoapClient(server=(caophost, COAP_PORT))
         response = coapclient.get(url, timeout=COAP_TIMEOUT)
         if(response):
