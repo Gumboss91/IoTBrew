@@ -49,7 +49,7 @@ def mqtt_on_disconnect(client, userdata, flags, rc):
     print("MQTT Disconnected")
 
 def getWellknown(devaddr):
-    oapclient = CoapClient(server=(devaddr, COAP_PORT))
+    coapclient = CoapClient(server=(devaddr, COAP_PORT))
     resp = coapclient.get(".well-known/core", timeout=COAP_TIMEOUT)
     coapclient.stop()
     coapclient.close()
