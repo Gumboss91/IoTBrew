@@ -163,7 +163,7 @@ while True:
 
     if(caophost not in sensor_res_cache or len(sensor_res_cache[caophost]) < 1):
         sensor_res_cache[caophost] = getRessources(caophost)
-        sensor_res_cache["cfg"] = getConfig(caophost)
+        sensor_res_cache[caophost]["cfg"] = getConfig(caophost)
         configureSleep(caophost)
     else:
         dev_res = getRessources(caophost)
