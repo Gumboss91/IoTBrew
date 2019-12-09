@@ -130,9 +130,12 @@ while True:
 
     if not influxdb_connected and USE_INFLUXDB:
         print("Connect to Influxdb")
-        influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS, 8086, INFLUXDB_USER, INFLUXDB_PASSWORD, None)
-        init_influxdb_database(influxdb_client)
-        influxdb_connected = True
+        try:
+            influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS, 8086, INFLUXDB_USER, INFLUXDB_PASSWORD, None)
+            init_influxdb_database(influxdb_client)
+            influxdb_connected = True
+        except influxdb.exceptions.InfluxDBServerError:
+            influxdb_connected = False
 
     print(datetime.datetime.now())
     print("Waiting for data")
@@ -150,8 +153,11 @@ while True:
         response = coapclient.get(url, timeout=COAP_TIMEOUT)
         if(response):
             if influxdb_connected:
-                influxdb_sendSensorData(influxdb_client, caophost, response.payload)
-                print("Store:", response.payload)
+                try:
+                    influxdb_sendSensorData(influxdb_client, caophost, response.payload)
+                    print("Store:", response.payload)
+                except influxdb.exceptions.InfluxDBServerError:
+                    influxdb_connected = False
             if mqtt_connected:
                 client.publish("6lopawan/sensor/" + caophost + "/" + url, response.payload)
                 print("Publish:", response.payload)
