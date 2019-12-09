@@ -54,7 +54,9 @@ def getWellknown(devaddr):
     coapclient.stop()
     coapclient.close()
     del(coapclient)
-    return resp.payload
+    if(resp):
+        return resp.payload
+    return None
 
 # Sensor Functions
 def getRessources(devaddr):
@@ -75,13 +77,23 @@ def getRessources(devaddr):
             if observable:
                 url = props[0][1:-1]
                 ressources.append(url)
-                
+
     return {"res": ressources, "raw": resp}
+
+def getConfig(devaddr):
+    print("Get config")
+    coapclient = CoapClient(server=(devaddr, COAP_PORT))
+    resp = coapclient.get("very_sleepy_config", timeout=COAP_TIMEOUT)
+    coapclient.stop()
+    coapclient.close()
+    del(coapclient)
+    if resp:
+        return resp.payload
+    return None
 
 def configureSleep(devaddr):
     print("Configure sleep")
     coapclient = CoapClient(server=(devaddr, COAP_PORT))
-    resp = coapclient.get("very_sleepy_config", timeout=COAP_TIMEOUT)
     resp = coapclient.post("very_sleepy_config", "mode=1&offtime="+str(SENSOR_OFFTIME)+"&ontime="+str(SENSOR_ONTIME), timeout=COAP_TIMEOUT)
     coapclient.stop()
     coapclient.close()
@@ -151,10 +163,13 @@ while True:
 
     if(caophost not in sensor_res_cache or len(sensor_res_cache[caophost]) < 1):
         sensor_res_cache[caophost] = getRessources(caophost)
+        sensor_res_cache["cfg"] = getConfig(caophost)
         configureSleep(caophost)
     else:
-        dev_conf = getRessources(caophost)
-        if(dev_conf["raw"] != sensor_res_cache[caophost]["raw"]):
+        dev_res = getRessources(caophost)
+        dev_cfg = getConfig(caophost)
+        if(dev_res["raw"] != sensor_res_cache[caophost]["raw"] \
+          or dev_cfg != sensor_res_cache[caophost]["cfg"]):
             print("Cache invalid, reconfigure")
             sensor_res_cache[caophost] = dev_conf
             configureSleep(caophost)
