@@ -107,22 +107,29 @@ def init_influxdb_database(influxdb_client):
     influxdb_client.switch_database(INFLUXDB_DATABASE)
 
 def influxdb_sendSensorData(influxdb_client, sensor, data):
-    jsondata = json.loads(data)
-    for value_name in jsondata:
-        json_body = [
-            {
-                'measurement': value_name,
-                'tags': {
-                    'location': sensor
-                },
-                'fields': {
-                    'value': jsondata[value_name]["v"],
-                    'unit': jsondata[value_name]["u"],
+    try:
+        jsondata = json.loads(data)
+        for value_name in jsondata:
+            json_body = [
+                {
+                    'measurement': value_name,
+                    'tags': {
+                        'location': sensor
+                    },
+                    'fields': {
+                        'value': jsondata[value_name]["v"],
+                        'unit': jsondata[value_name]["u"],
+                    }
                 }
-            }
-        ]
-        influxdb_client.write_points(json_body)
-
+            ]
+            influxdb_client.write_points(json_body)
+        return True
+    except influxdb.exceptions.InfluxDBServerError:
+        print("Influxdb storage failed")
+        return False
+def influxdb_sendSensorDataStr(influxdb_client, sensor, data):
+    jsondata = json.loads(data)
+    return influxdb_sendSensorData(influxdb_client, sensor, jsondata)
 # Announce our route to 6lbr
 client_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM) # UDP
 client_socket.sendto(bytes("1\n\n", "utf-8"), (IP_6LBR, PORT_6LBR))
@@ -151,6 +158,7 @@ while True:
             influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS, 8086, INFLUXDB_USER, INFLUXDB_PASSWORD, None)
             init_influxdb_database(influxdb_client)
             influxdb_connected = True
+            influxdb_sendSensorData(influxdb_client, "server.py", {"connect": {"v": 1, "u": "on/off"}})
         except influxdb.exceptions.InfluxDBServerError:
             print("Connection failed")
             influxdb_connected = False
@@ -158,6 +166,7 @@ while True:
     print(datetime.datetime.now())
     print("Waiting for data")
     message, address = server_socket.recvfrom(1024)
+    influxdb_connected = influxdb_sendSensorData(influxdb_client, "server.py", {"udp": {"v": 1, "u": "on/off"}})
     print("UDP received, starting coap", address[0])
     caophost = address[0]
 
@@ -171,6 +180,7 @@ while True:
         if(dev_res["raw"] != sensor_res_cache[caophost]["raw"] \
           or dev_cfg != sensor_res_cache[caophost]["cfg"]):
             print("Cache invalid, reconfigure")
+            influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache": {"v": 1, "u": "on/off"}})
             sensor_res_cache[caophost] = dev_res
             sensor_res_cache[caophost]["cfg"] = dev_cfg
             configureSleep(caophost)
@@ -181,16 +191,12 @@ while True:
         response = coapclient.get(url, timeout=COAP_TIMEOUT)
         if(response):
             if influxdb_connected:
-                try:
-                    influxdb_sendSensorData(influxdb_client, caophost, response.payload)
-                    print("Store:", response.payload)
-                except influxdb.exceptions.InfluxDBServerError:
-                    print("Influx data storage failed")
-                    influxdb_connected = False
+                influxdb_connected = influxdb_sendSensorDataStr(influxdb_client, caophost, response.payload)
             if mqtt_connected:
                 client.publish("6lopawan/sensor/" + caophost + "/" + url, response.payload)
                 print("Publish:", response.payload)
         else:
+            influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"timeout": {"v": 1, "u": "url"}})
             print("Coap Timeout")
         coapclient.stop()
         coapclient.close()
