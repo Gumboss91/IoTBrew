@@ -185,8 +185,8 @@ while True:
             configureSleep(caophost)
         
     print("Cached", sensor_res_cache[caophost])
+    coapclient = CoapClient(server=(caophost, COAP_PORT))
     for url in sensor_res_cache[caophost]["res"]:
-        coapclient = CoapClient(server=(caophost, COAP_PORT))
         response = coapclient.get(url, timeout=COAP_TIMEOUT)
         if(response):
             if influxdb_connected:
@@ -197,6 +197,6 @@ while True:
         else:
             influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"timeout": {"v": 1, "u": url}})
             print("Coap Timeout")
-        coapclient.stop()
-        coapclient.close()
-        del(coapclient)
+    coapclient.stop()
+    coapclient.close()
+    del(coapclient)
