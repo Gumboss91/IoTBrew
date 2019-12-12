@@ -78,7 +78,9 @@ def getRessources(devaddr):
                 url = props[0][1:-1]
                 ressources.append(url)
 
-    return {"res": ressources, "raw": resp}
+        return {"res": ressources, "raw": resp}
+    else:
+        return None
 
 def getConfig(devaddr):
     print("Get config")
@@ -176,7 +178,7 @@ while True:
     else:
         dev_res = getRessources(caophost)
         dev_cfg = getConfig(caophost)
-        if(dev_res["raw"] != sensor_res_cache[caophost]["raw"] \
+        if dev_res and dev_cfg and (dev_res["raw"] != sensor_res_cache[caophost]["raw"] \
           or dev_cfg != sensor_res_cache[caophost]["cfg"]):
             print("Cache invalid, reconfigure")
             influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache": {"v": 1, "u": "on/off"}})
