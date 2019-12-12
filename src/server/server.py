@@ -186,17 +186,21 @@ while True:
         
     print("Cached", sensor_res_cache[caophost])
     coapclient = CoapClient(server=(caophost, COAP_PORT))
+    sensordata = []
     for url in sensor_res_cache[caophost]["res"]:
         response = coapclient.get(url, timeout=COAP_TIMEOUT)
         if(response):
-            if influxdb_connected:
-                influxdb_connected = influxdb_sendSensorDataStr(influxdb_client, caophost, response.payload)
-            if mqtt_connected:
-                client.publish("6lopawan/sensor/" + caophost + "/" + url, response.payload)
-                print("Publish:", response.payload)
+            sensordata.append(response.payload)
         else:
             influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"timeout": {"v": 1, "u": url}})
             print("Coap Timeout")
     coapclient.stop()
     coapclient.close()
     del(coapclient)
+
+    for data in sensordata:
+        if influxdb_connected:
+                influxdb_connected = influxdb_sendSensorDataStr(influxdb_client, caophost, response.payload)
+            if mqtt_connected:
+                client.publish("6lopawan/sensor/" + caophost + "/" + url, response.payload)
+                print("Publish:", response.payload)
