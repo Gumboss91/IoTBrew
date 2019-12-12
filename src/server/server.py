@@ -106,9 +106,8 @@ def init_influxdb_database(influxdb_client):
         influxdb_client.create_database(INFLUXDB_DATABASE)
     influxdb_client.switch_database(INFLUXDB_DATABASE)
 
-def influxdb_sendSensorData(influxdb_client, sensor, data):
+def influxdb_sendSensorData(influxdb_client, sensor, jsondata):
     try:
-        jsondata = json.loads(data)
         for value_name in jsondata:
             json_body = [
                 {
