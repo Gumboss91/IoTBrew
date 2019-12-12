@@ -195,7 +195,7 @@ while True:
                 client.publish("6lopawan/sensor/" + caophost + "/" + url, response.payload)
                 print("Publish:", response.payload)
         else:
-            influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"timeout": {"v": 1, "u": "url"}})
+            influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"timeout": {"v": 1, "u": url}})
             print("Coap Timeout")
         coapclient.stop()
         coapclient.close()
