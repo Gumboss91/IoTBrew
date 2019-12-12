@@ -201,6 +201,6 @@ while True:
     for data in sensordata:
         if influxdb_connected:
                 influxdb_connected = influxdb_sendSensorDataStr(influxdb_client, caophost, response.payload)
-            if mqtt_connected:
-                client.publish("6lopawan/sensor/" + caophost + "/" + url, response.payload)
-                print("Publish:", response.payload)
+        if mqtt_connected:
+            client.publish("6lopawan/sensor/" + caophost + "/" + url, response.payload)
+            print("Publish:", response.payload)
