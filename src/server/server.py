@@ -172,9 +172,9 @@ while True:
     caophost = address[0]
 
     if(caophost not in sensor_res_cache or len(sensor_res_cache[caophost]["res"]) < 1):
+        configureSleep(caophost)
         sensor_res_cache[caophost] = getRessources(caophost)
         sensor_res_cache[caophost]["cfg"] = getConfig(caophost)
-        configureSleep(caophost)
     else:
         dev_res = getRessources(caophost)
         dev_cfg = getConfig(caophost)
@@ -184,9 +184,9 @@ while True:
             influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache": {"v": 1, "u": "on/off"}})
             influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache_cause_res": {"v": dev_res["raw"], "u": sensor_res_cache[caophost]["raw"]}})
             influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache_cause_cfg": {"v": dev_cfg, "u": sensor_res_cache[caophost]["cfg"]}})
+            configureSleep(caophost)
             sensor_res_cache[caophost] = dev_res
             sensor_res_cache[caophost]["cfg"] = dev_cfg
-            configureSleep(caophost)
         
     print("Cached", sensor_res_cache[caophost])
     coapclient = CoapClient(server=(caophost, COAP_PORT))
