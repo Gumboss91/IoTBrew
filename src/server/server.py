@@ -131,7 +131,7 @@ def influxdb_sendSensorData(influxdb_client, sensor, jsondata):
 def influxdb_sendSensorDataStr(influxdb_client, sensor, data):
     if data == None:
         return True
-        
+
     try:
         jsondata = json.loads(data)
         return influxdb_sendSensorData(influxdb_client, sensor, jsondata)
@@ -180,7 +180,7 @@ while True:
     caophost = address[0]
 
     if(caophost not in sensor_res_cache or len(sensor_res_cache[caophost]["res"]) < 1):
-        configureSleep(caophost)
+        #configureSleep(caophost)
         sensor_res_cache[caophost] = getRessources(caophost)
         sensor_res_cache[caophost]["cfg"] = getConfig(caophost)
     else:
@@ -193,7 +193,7 @@ while True:
             influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache_cause_res": {"v": dev_res["raw"], "u": sensor_res_cache[caophost]["raw"]}})
             influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache_cause_cfg": {"v": dev_cfg, "u": sensor_res_cache[caophost]["cfg"]}})
             if(dev_cfg != sensor_res_cache[caophost]["cfg"]):
-                configureSleep(caophost)
+                #configureSleep(caophost)
                 dev_cfg = getConfig(caophost)
             sensor_res_cache[caophost] = dev_res
             sensor_res_cache[caophost]["cfg"] = dev_cfg
