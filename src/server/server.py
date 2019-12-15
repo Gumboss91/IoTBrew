@@ -16,7 +16,7 @@ PORT_6LBR = 3000
 
 # Sensor Settings
 COAP_PORT = 5683
-COAP_TIMEOUT=5
+COAP_TIMEOUT=2
 PORT_DISCOVERY = 3001
 SENSOR_ONTIME=21
 SENSOR_OFFTIME=60*1
@@ -182,7 +182,7 @@ while True:
     caophost = address[0]
 
     if(caophost not in sensor_res_cache or len(sensor_res_cache[caophost]["res"]) < 1):
-        #configureSleep(caophost)
+        configureSleep(caophost)
         sensor_res_cache[caophost] = getRessources(caophost)
         sensor_res_cache[caophost]["cfg"] = getConfig(caophost)
     else:
