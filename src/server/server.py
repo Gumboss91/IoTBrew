@@ -131,10 +131,11 @@ def influxdb_sendSensorData(influxdb_client, sensor, jsondata):
 def influxdb_sendSensorDataStr(influxdb_client, sensor, data):
     try:
         jsondata = json.loads(data)
+        return influxdb_sendSensorData(influxdb_client, sensor, jsondata)
     except json.decoder.JSONDecodeError:
         print("Can't transform string to object")
         print(data)
-    return influxdb_sendSensorData(influxdb_client, sensor, jsondata)
+    return True
 # Announce our route to 6lbr
 client_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM) # UDP
 client_socket.sendto(bytes("1\n\n", "utf-8"), (IP_6LBR, PORT_6LBR))
