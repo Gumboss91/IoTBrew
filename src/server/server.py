@@ -182,7 +182,7 @@ while True:
     caophost = address[0]
 
     if(caophost not in sensor_res_cache or len(sensor_res_cache[caophost]["res"]) < 1):
-        configureSleep(caophost)
+        #configureSleep(caophost)
         sensor_res_cache[caophost] = getRessources(caophost)
         sensor_res_cache[caophost]["cfg"] = getConfig(caophost)
     else:
