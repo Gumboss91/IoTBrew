@@ -14,9 +14,9 @@ logging.disable(logging.DEBUG)
 IP_6LBR = "bbbb::100"
 PORT_6LBR = 3000
 
-# Sensor Settings
+# Sensor Settings kuhkugkug
 COAP_PORT = 5683
-COAP_TIMEOUT=2
+COAP_TIMEOUT=4
 PORT_DISCOVERY = 3001
 SENSOR_ONTIME=21
 SENSOR_OFFTIME=60*1
