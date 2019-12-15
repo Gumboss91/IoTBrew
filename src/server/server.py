@@ -80,7 +80,7 @@ def getRessources(devaddr):
 
         return {"res": ressources, "raw": resp}
     else:
-        return None
+        return {"res": [], "raw": ""}
 
 def getConfig(devaddr):
     print("Get config")
