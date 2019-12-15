@@ -168,11 +168,8 @@ while True:
             init_influxdb_database(influxdb_client)
             influxdb_connected = True
             influxdb_sendSensorData(influxdb_client, "server.py", {"connect": {"v": 1, "u": "on/off"}})
-        except influxdb.exceptions.InfluxDBServerError:
+        except Exception:
             print("Connection failed")
-            influxdb_connected = False
-        except requests.exceptions.ConnectionError:
-            print("Connection HTTP failed")
             influxdb_connected = False
 
     print(datetime.datetime.now())
