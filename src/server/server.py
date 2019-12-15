@@ -129,6 +129,9 @@ def influxdb_sendSensorData(influxdb_client, sensor, jsondata):
         print("Influxdb storage failed")
         return False
 def influxdb_sendSensorDataStr(influxdb_client, sensor, data):
+    if data == None:
+        return True
+        
     try:
         jsondata = json.loads(data)
         return influxdb_sendSensorData(influxdb_client, sensor, jsondata)
@@ -177,7 +180,7 @@ while True:
     caophost = address[0]
 
     if(caophost not in sensor_res_cache or len(sensor_res_cache[caophost]["res"]) < 1):
-        #configureSleep(caophost)
+        configureSleep(caophost)
         sensor_res_cache[caophost] = getRessources(caophost)
         sensor_res_cache[caophost]["cfg"] = getConfig(caophost)
     else:
