@@ -18,8 +18,8 @@ PORT_6LBR = 3000
 COAP_PORT = 5683
 COAP_TIMEOUT=4
 PORT_DISCOVERY = 3001
-SENSOR_ONTIME=21
-SENSOR_OFFTIME=60*1
+SENSOR_ONTIME="21"
+SENSOR_OFFTIME="60"
 
 # Influxdb
 INFLUXDB_ADDRESS = 'localhost'
@@ -102,8 +102,8 @@ def configureSleep(devaddr):
     print("Configure sleep")
     coapclient = CoapClient(server=(devaddr, COAP_PORT))
     #resp = coapclient.post("very_sleepy_config", "mode=1&offtime="+str(SENSOR_OFFTIME)+"&ontime="+str(SENSOR_ONTIME), callback=configACK, timeout=5*COAP_TIMEOUT)
-    resp = coapclient.post("very_sleepy_config", "ontime=+str(SENSOR_ONTIME)", timeout=COAP_TIMEOUT)
-    resp = coapclient.post("very_sleepy_config", "offtime=+str(SENSOR_OFFTIME)", timeout=COAP_TIMEOUT)
+    #resp = coapclient.post("very_sleepy_config", "ontime="+str(SENSOR_ONTIME), timeout=COAP_TIMEOUT)
+    #resp = coapclient.post("very_sleepy_config", "offtime="+str(SENSOR_OFFTIME), timeout=COAP_TIMEOUT)
     resp = coapclient.post("very_sleepy_config", "mode=1", timeout=COAP_TIMEOUT)
     coapclient.stop()
     coapclient.close()
