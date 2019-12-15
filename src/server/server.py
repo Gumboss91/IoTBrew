@@ -101,10 +101,11 @@ def configACK(response):
 def configureSleep(devaddr):
     print("Configure sleep")
     coapclient = CoapClient(server=(devaddr, COAP_PORT))
-    resp = coapclient.post("very_sleepy_config", "mode=1&offtime="+str(SENSOR_OFFTIME)+"&ontime="+str(SENSOR_ONTIME), callback=configACK, timeout=5*COAP_TIMEOUT)
-    #coapclient.stop()
-    #coapclient.close()
-    #del(coapclient)
+    #resp = coapclient.post("very_sleepy_config", "mode=1&offtime="+str(SENSOR_OFFTIME)+"&ontime="+str(SENSOR_ONTIME), callback=configACK, timeout=5*COAP_TIMEOUT)
+    resp = coapclient.post("very_sleepy_config", "mode=1&offtime="+str(SENSOR_OFFTIME)+"&ontime="+str(SENSOR_ONTIME), timeout=5*COAP_TIMEOUT)
+    coapclient.stop()
+    coapclient.close()
+    del(coapclient)
 
 # Influxdb
 def init_influxdb_database(influxdb_client):
