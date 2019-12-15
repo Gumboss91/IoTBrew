@@ -171,6 +171,9 @@ while True:
         except influxdb.exceptions.InfluxDBServerError:
             print("Connection failed")
             influxdb_connected = False
+        except requests.exceptions.ConnectionError:
+            print("Connection HTTP failed")
+            influxdb_connected = False
 
     print(datetime.datetime.now())
     print("Waiting for data")
