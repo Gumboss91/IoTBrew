@@ -95,12 +95,8 @@ def getConfig(devaddr):
     return None
 
 def configACK(coapclient):
-    return def func(respos):
-        print("Config ACK")
-        print(response)
-        coapclient.stop()
-        coapclient.close()
-        del(coapclient)
+    print("Config ACK")
+    print(response)
 
 def configureSleep(devaddr):
     print("Configure sleep")
