@@ -202,7 +202,7 @@ while True:
             influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache_cause_res": {"v": dev_res["raw"], "u": sensor_res_cache[caophost]["raw"]}})
             influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache_cause_cfg": {"v": dev_cfg, "u": sensor_res_cache[caophost]["cfg"]}})
             if(dev_cfg != sensor_res_cache[caophost]["cfg"]):
-                #configureSleep(caophost)
+                configureSleep(caophost)
                 dev_cfg = getConfig(caophost)
             sensor_res_cache[caophost] = dev_res
             sensor_res_cache[caophost]["cfg"] = dev_cfg
