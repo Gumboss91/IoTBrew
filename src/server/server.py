@@ -161,7 +161,7 @@ while True:
         print("Reconnecting MQTT")
         client.connect(MQTT_BROCKER)
 
-    if not influxdb_connected and USE_INFLUXDB:
+    while not influxdb_connected and USE_INFLUXDB:
         print("Connect to Influxdb")
         try:
             influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS, 8086, INFLUXDB_USER, INFLUXDB_PASSWORD, None)
@@ -171,6 +171,7 @@ while True:
         except Exception:
             print("Connection failed")
             influxdb_connected = False
+            time.sleep(10)
 
     print(datetime.datetime.now())
     print("Waiting for data")
