@@ -94,14 +94,14 @@ def getConfig(devaddr):
         return resp.payload
     return None
 
-def configACK(coapclient):
+def configACK(response):
     print("Config ACK")
     print(response)
 
 def configureSleep(devaddr):
     print("Configure sleep")
     coapclient = CoapClient(server=(devaddr, COAP_PORT))
-    resp = coapclient.post("very_sleepy_config", "mode=1&offtime="+str(SENSOR_OFFTIME)+"&ontime="+str(SENSOR_ONTIME), callback=configACK(coapclient), timeout=5*COAP_TIMEOUT)
+    resp = coapclient.post("very_sleepy_config", "mode=1&offtime="+str(SENSOR_OFFTIME)+"&ontime="+str(SENSOR_ONTIME), callback=configACK, timeout=5*COAP_TIMEOUT)
     #coapclient.stop()
     #coapclient.close()
     #del(coapclient)
