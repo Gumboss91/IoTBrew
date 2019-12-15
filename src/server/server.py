@@ -129,7 +129,11 @@ def influxdb_sendSensorData(influxdb_client, sensor, jsondata):
         print("Influxdb storage failed")
         return False
 def influxdb_sendSensorDataStr(influxdb_client, sensor, data):
-    jsondata = json.loads(data)
+    try:
+        jsondata = json.loads(data)
+    except json.decoder.JSONDecodeError:
+        print("Can't transform string to object")
+        print(data)
     return influxdb_sendSensorData(influxdb_client, sensor, jsondata)
 # Announce our route to 6lbr
 client_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM) # UDP
