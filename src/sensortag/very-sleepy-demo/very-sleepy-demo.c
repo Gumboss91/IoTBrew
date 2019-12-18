@@ -44,6 +44,10 @@
 #include "coap-engine.h"
 #include "coap.h"
 
+#ifndef LOG_CONF_LEVEL_VERYSLEEPY
+#define PRINTF(...)
+#endif
+
 // Added
 #include "net/ipv6/simple-udp.h"
 

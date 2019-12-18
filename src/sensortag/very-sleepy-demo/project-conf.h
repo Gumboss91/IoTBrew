@@ -53,8 +53,7 @@
 //#define LOG_CONF_LEVEL_TCPIP                       LOG_LEVEL_DBG
 //#define LOG_CONF_LEVEL_MAC                         LOG_LEVEL_DBG
 //#define LOG_CONF_LEVEL_FRAMER                      LOG_LEVEL_DBG
-
-#define PRINTF(...)
+//#define LOG_CONF_LEVEL_VERYSLEEPY
 
 /*
  * We'll fail without RPL probing, so turn it on explicitly even though it's
