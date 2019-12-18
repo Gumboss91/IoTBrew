@@ -101,8 +101,6 @@ sleepy_config_t config;
 #define MAX_MCAST_PAYLOAD_LEN 120
 #define MCAST_SINK_UDP_PORT 3001 /* Host byte order */
 
-
-
 /*---------------------------------------------------------------------------*/
 #if DO_RESTART != 0
 static struct stimer st_restart;
@@ -562,11 +560,11 @@ PROCESS_THREAD(very_sleepy_demo_process, ev, data)
   SENSORS_ACTIVATE(opt_3001_sensor);
   SENSORS_ACTIVATE(tmp_007_sensor);
 
-  /*readings_batt_resource.flags += IS_OBSERVABLE;
+  readings_batt_resource.flags += IS_OBSERVABLE;
   readings_press_resource.flags += IS_OBSERVABLE;
   readings_hum_resource.flags += IS_OBSERVABLE;
   readings_light_resource.flags += IS_OBSERVABLE;
-  readings_temp_resource.flags += IS_OBSERVABLE;*/
+  readings_temp_resource.flags += IS_OBSERVABLE;
   
   coap_activate_resource(&readings_hum_resource, "sen/readings/hum");
   coap_activate_resource(&readings_press_resource, "sen/readings/press");
@@ -634,11 +632,11 @@ PROCESS_THREAD(very_sleepy_demo_process, ev, data)
        * send notifications to observers as required.
        */
       if(state == STATE_NOTIFY_OBSERVERS) {
-        /*coap_notify_observers(&readings_batt_resource);
+        coap_notify_observers(&readings_batt_resource);
         coap_notify_observers(&readings_hum_resource);
         coap_notify_observers(&readings_press_resource);
         coap_notify_observers(&readings_light_resource);
-        coap_notify_observers(&readings_temp_resource);*/
+        coap_notify_observers(&readings_temp_resource);
 
         sendUdp(0);
         
