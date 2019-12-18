@@ -1,0 +1,2 @@
+# Route on Router to WSN, somehow not set automatically
+route -A inet6 add fd00::/64 gw bbbb::100
