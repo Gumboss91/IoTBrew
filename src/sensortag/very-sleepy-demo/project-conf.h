@@ -62,6 +62,9 @@
 #define RPL_CONF_WITH_PROBING                 1
 // With only 2 chances in one minute and 30min downtime, this default logic is insane
 #define RPL_CONF_WITH_DAO_ACK                 0
+
+//the delay after which a node actually leaves a network, by default, 5 minutes.
+#define RPL_CONF_DELAY_BEFORE_LEAVING 1
 /*---------------------------------------------------------------------------*/
 #endif /* PROJECT_CONF_H_ */
 /*---------------------------------------------------------------------------*/

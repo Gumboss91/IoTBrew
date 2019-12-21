@@ -59,14 +59,14 @@
 /*---------------------------------------------------------------------------*/
 /* Normal mode duration params in seconds */
 #define OFF_TIME_DEFAULT 20
-#define OFF_TIME_MIN     10
+#define OFF_TIME_MIN     1
 #define OFF_TIME_MAX     86400/* 1 day */
 #define RESTART_INTERVAL 60*60
 #define DO_RESTART 0
 /*---------------------------------------------------------------------------*/
 /* Observer notification period params in seconds */
 #define ON_TIME_DEFAULT  20
-#define ON_TIME_MIN      5
+#define ON_TIME_MIN      1
 #define ON_TIME_MAX      60 
 /*---------------------------------------------------------------------------*/
 #define VERY_SLEEPY_MODE_OFF 0
@@ -77,18 +77,22 @@
 
 #define KEEP_MAC_ON_MIN_PERIOD 10 /* secs */
 /*---------------------------------------------------------------------------*/
-#define PERIODIC_INTERVAL_OFF         (10*CLOCK_SECOND)
-#define PERIODIC_INTERVAL_ON         (1*CLOCK_SECOND)
+#define PERIODIC_INTERVAL_OFF         (20*CLOCK_SECOND)
+#define PERIODIC_INTERVAL_ON         (10*CLOCK_SECOND)
 /*---------------------------------------------------------------------------*/
 #define POST_STATUS_BAD           0x80
 #define POST_STATUS_HAS_MODE      0x40
 #define POST_STATUS_HAS_OFFTIME   0x20
+#define POST_STATUS_HAS_OFFTIME_DELAY   0x21
 #define POST_STATUS_HAS_ONTIME    0x10
+#define POST_STATUS_HAS_ONTIME_DELAY   0x11
 #define POST_STATUS_NONE          0x00
 /*---------------------------------------------------------------------------*/
 typedef struct sleepy_config_s {
   unsigned long offtime;
   unsigned long ontime;
+  unsigned long ontime_delay;
+  unsigned long offtime_delay;
   uint8_t mode;
 } sleepy_config_t;
 
@@ -98,7 +102,7 @@ sleepy_config_t config;
 #define STATE_NOTIFY_OBSERVERS 1
 #define STATE_VERY_SLEEPY      2
 
-#define MAX_MCAST_PAYLOAD_LEN 120
+#define MAX_MCAST_PAYLOAD_LEN 10
 #define MCAST_SINK_UDP_PORT 3001 /* Host byte order */
 
 /*---------------------------------------------------------------------------*/
@@ -351,6 +355,8 @@ conf_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *bu
   char tmp_buf[16];
   unsigned long ontime = 0;
   unsigned long offtime = 0;
+  unsigned long ontime_delay = 0;
+  unsigned long offtime_delay = 0;
   uint8_t mode = VERY_SLEEPY_MODE_OFF;
   uint8_t post_status = POST_STATUS_NONE;
   int rv;
@@ -388,6 +394,26 @@ conf_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *bu
     }
   }
 
+  rv = coap_get_post_variable(request, "ontime_delay", &ptr);
+  if(rv && rv < 16) {
+    memset(tmp_buf, 0, sizeof(tmp_buf));
+    memcpy(tmp_buf, ptr, rv);
+    rv = atoi(tmp_buf);
+
+    ontime_delay = (unsigned long)rv;
+    post_status |= POST_STATUS_HAS_ONTIME_DELAY;
+  }
+
+  rv = coap_get_post_variable(request, "offtime_delay", &ptr);
+  if(rv && rv < 16) {
+    memset(tmp_buf, 0, sizeof(tmp_buf));
+    memcpy(tmp_buf, ptr, rv);
+    rv = atoi(tmp_buf);
+
+    offtime_delay = (unsigned long)rv;
+    post_status |= POST_STATUS_HAS_OFFTIME_DELAY;
+  }
+
   rv = coap_get_post_variable(request, "ontime", &ptr);
   PRINTF("Interval rv %d\n", rv);
   if(rv && rv < 16) {
@@ -422,6 +448,14 @@ conf_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *bu
 
   if(post_status & POST_STATUS_HAS_OFFTIME) {
     config.offtime = offtime;
+  }
+
+  if(post_status & POST_STATUS_HAS_OFFTIME_DELAY) {
+    config.offtime_delay = offtime_delay;
+  }
+
+  if(post_status & POST_STATUS_HAS_ONTIME_DELAY) {
+    config.ontime_delay = ontime_delay;
   }
 
   if(post_status & POST_STATUS_HAS_ONTIME) {
@@ -526,7 +560,7 @@ static inline void sendUdp(uint8_t status) {
   SENSORS_ACTIVATE(hdc_1000_sensor);
   SENSORS_ACTIVATE(opt_3001_sensor);
   SENSORS_ACTIVATE(tmp_007_sensor);
-  //uip_udp_packet_send(mcast_conn, udp_mcast_buf, sizeof(udp_mcast_buf));
+
   simple_udp_sendto(&mcast_conn, udp_mcast_buf, sizeof(udp_mcast_buf), &ipaddr);
   PRINTF("UDP send %d\n", status);
 }
@@ -545,6 +579,8 @@ PROCESS_THREAD(very_sleepy_demo_process, ev, data)
   config.mode = VERY_SLEEPY_MODE_ON;
   config.ontime = ON_TIME_DEFAULT;
   config.offtime = OFF_TIME_DEFAULT;
+  config.ontime_delay = PERIODIC_INTERVAL_ON;
+  config.offtime_delay = PERIODIC_INTERVAL_OFF;
   
   bmp_280_sensor.configure(SENSORS_HW_INIT, 0);
   hdc_1000_sensor.configure(SENSORS_HW_INIT, 0);
@@ -581,10 +617,8 @@ PROCESS_THREAD(very_sleepy_demo_process, ev, data)
   
   memset(udp_mcast_buf, 0x32, MAX_MCAST_PAYLOAD_LEN/2);
   
-  //mcast_conn = udp_new(&ipaddr, UIP_HTONS(MCAST_SINK_UDP_PORT), NULL);  
   simple_udp_register(&mcast_conn, MCAST_SINK_UDP_PORT, NULL,
                       MCAST_SINK_UDP_PORT, NULL);
-  //udp_bind(mcast_conn, UIP_HTONS(MCAST_SINK_UDP_PORT));
 
   PRINTF("Pre-While\n");
   stimer_set(&st_offtime, config.offtime);
@@ -593,11 +627,11 @@ PROCESS_THREAD(very_sleepy_demo_process, ev, data)
   #endif
   mac_status = 0;
 
+  leds_off(LEDS_GREEN);
+
   while(1) {
 
-    //PRINTF("sleep\n");
     PROCESS_YIELD();
-    //PRINTF("unsleep %d, %d, %d, %d\n", ev, sensors_event, PROCESS_EVENT_TIMER, event_new_config);
 
     #if DO_RESTART != 0
     if(stimer_expired(&st_restart)) {
@@ -677,7 +711,7 @@ PROCESS_THREAD(very_sleepy_demo_process, ev, data)
       if(mac_keep_on == MAC_CAN_BE_TURNED_OFF && state == STATE_VERY_SLEEPY) {
         PRINTF("Try OFF\n");
         if(mac_status) {
-          leds_off(LEDS_GREEN);
+          //leds_off(LEDS_GREEN);
           NETSTACK_MAC.off();
           mac_status = 0;
           PRINTF("MAC off %d\n", mac_keep_on);
@@ -685,7 +719,7 @@ PROCESS_THREAD(very_sleepy_demo_process, ev, data)
       } else {
         PRINTF("Try ON\n");
         if(!mac_status) {
-          leds_on(LEDS_GREEN);
+          //leds_on(LEDS_GREEN);
           NETSTACK_MAC.on();
           PRINTF("MAC on - SEND %d\n", mac_keep_on);
           mac_status = 1;
@@ -694,9 +728,9 @@ PROCESS_THREAD(very_sleepy_demo_process, ev, data)
 
       /* Schedule next pass */
       if(mac_status) {
-        etimer_set(&et_periodic, PERIODIC_INTERVAL_ON);
+        etimer_set(&et_periodic, config.ontime_delay);
       } else {
-        etimer_set(&et_periodic, PERIODIC_INTERVAL_OFF);
+        etimer_set(&et_periodic, config.offtime_delay);
       }
     }
   }

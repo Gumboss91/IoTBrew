@@ -10,15 +10,11 @@ import time
 
 logging.disable(logging.DEBUG)
 
-# 6LoPaWAN
-IP_6LBR = "bbbb::100"
-PORT_6LBR = 3000
-
-# Sensor Settings kuhkugkug
+# Sensor Settings
 COAP_PORT = 5683
 COAP_TIMEOUT=4
 PORT_DISCOVERY = 3001
-SENSOR_ONTIME="10"#
+SENSOR_ONTIME="10"
 SENSOR_OFFTIME="60"
 
 # Influxdb
@@ -147,9 +143,6 @@ def influxdb_sendSensorDataStr(influxdb_client, sensor, data):
         print("Can't transform string to object")
         print(data)
     return True
-# Announce our route to 6lbr
-client_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM) # UDP
-client_socket.sendto(bytes("1\n\n", "utf-8"), (IP_6LBR, PORT_6LBR))
 
 # UDP
 server_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
