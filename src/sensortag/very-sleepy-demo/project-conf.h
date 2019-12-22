@@ -53,7 +53,7 @@
 //#define LOG_CONF_LEVEL_TCPIP                       LOG_LEVEL_DBG
 //#define LOG_CONF_LEVEL_MAC                         LOG_LEVEL_DBG
 //#define LOG_CONF_LEVEL_FRAMER                      LOG_LEVEL_DBG
-//#define LOG_CONF_LEVEL_VERYSLEEPY
+//#define LOG_CONF_LEVEL_VERYSLEEPY 1
 
 /*
  * We'll fail without RPL probing, so turn it on explicitly even though it's
@@ -64,7 +64,7 @@
 #define RPL_CONF_WITH_DAO_ACK                 0
 
 //the delay after which a node actually leaves a network, by default, 5 minutes.
-#define RPL_CONF_DELAY_BEFORE_LEAVING 1
+#define RPL_CONF_DELAY_BEFORE_LEAVING (2 * 60 * CLOCK_SECOND)
 /*---------------------------------------------------------------------------*/
 #endif /* PROJECT_CONF_H_ */
 /*---------------------------------------------------------------------------*/

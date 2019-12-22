@@ -46,6 +46,8 @@
 
 #ifndef LOG_CONF_LEVEL_VERYSLEEPY
 #define PRINTF(...)
+#else
+#define PRINTF(...) printf(__VA_ARGS__)
 #endif
 
 // Added
@@ -83,9 +85,9 @@
 #define POST_STATUS_BAD           0x80
 #define POST_STATUS_HAS_MODE      0x40
 #define POST_STATUS_HAS_OFFTIME   0x20
-#define POST_STATUS_HAS_OFFTIME_DELAY   0x21
+#define POST_STATUS_HAS_OFFTIME_DELAY   0x01
 #define POST_STATUS_HAS_ONTIME    0x10
-#define POST_STATUS_HAS_ONTIME_DELAY   0x11
+#define POST_STATUS_HAS_ONTIME_DELAY   0x02
 #define POST_STATUS_NONE          0x00
 /*---------------------------------------------------------------------------*/
 typedef struct sleepy_config_s {
@@ -279,6 +281,13 @@ readings_light_get_handler(coap_message_t *request, coap_message_t *response, ui
 RESOURCE(readings_light_resource, "title=\"Sensor Light Readings\";obs",
          readings_light_get_handler, NULL, NULL, NULL);
 /*---------------------------------------------------------------------------*/
+// 0.0667 - 0.0674A offset = 66.7mA - 67.4mA
+// 0.0732A bootup
+// 0.0669 A operating
+// 0.0732A
+// 0.075A
+// 0.0699A = 69.9mA
+
 static void
 readings_temp_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer,
                      uint16_t preferred_size, int32_t *offset)
@@ -644,12 +653,16 @@ PROCESS_THREAD(very_sleepy_demo_process, ev, data)
     }
     
     if(ev == sensors_event && data == &bmp_280_sensor) {
+        PRINTF("Read BMP reading\n");
         get_bmp_reading();
     } else if(ev == sensors_event && data == &opt_3001_sensor) {
+        PRINTF("Read Light reading\n");
         get_light_reading();
     } else if(ev == sensors_event && data == &hdc_1000_sensor) {
+        PRINTF("Read HDC reading\n");
         get_hdc_reading();
     } else if(ev == sensors_event && data == &tmp_007_sensor) {
+        PRINTF("Read TMP reading\n");
         get_tmp_reading();
     }
 
