@@ -104,7 +104,7 @@ sleepy_config_t config;
 #define STATE_NOTIFY_OBSERVERS 1
 #define STATE_VERY_SLEEPY      2
 
-#define MAX_MCAST_PAYLOAD_LEN 10
+#define MAX_MCAST_PAYLOAD_LEN 500
 #define MCAST_SINK_UDP_PORT 3001 /* Host byte order */
 
 /*---------------------------------------------------------------------------*/
@@ -573,7 +573,7 @@ static inline void sendUdp(uint8_t status) {
   SENSORS_ACTIVATE(hdc_1000_sensor);
   SENSORS_ACTIVATE(opt_3001_sensor);
   SENSORS_ACTIVATE(tmp_007_sensor);
-
+  PRINTF("Prepare send %d\n", status);
   simple_udp_sendto(&mcast_conn, udp_mcast_buf, strlen(udp_mcast_buf), &ipaddr);
   PRINTF("UDP send %d\n", status);
 }

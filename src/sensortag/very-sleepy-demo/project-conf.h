@@ -43,7 +43,7 @@
 #define UIP_CONF_TCP                          0
 #define RPL_CONF_LEAF_ONLY                    1
 
-#define COAP_MAX_CHUNK_SIZE 64*8
+#define COAP_MAX_CHUNK_SIZE 500
 #define COAP_MAX_OPEN_TRANSACTIONS 6
 
 //#define LOG_CONF_LEVEL_COAP                        LOG_LEVEL_DBG
@@ -53,7 +53,7 @@
 //#define LOG_CONF_LEVEL_TCPIP                       LOG_LEVEL_DBG
 //#define LOG_CONF_LEVEL_MAC                         LOG_LEVEL_DBG
 //#define LOG_CONF_LEVEL_FRAMER                      LOG_LEVEL_DBG
-//#define LOG_CONF_LEVEL_VERYSLEEPY 1
+#define LOG_CONF_LEVEL_VERYSLEEPY 1
 
 /*
  * We'll fail without RPL probing, so turn it on explicitly even though it's
