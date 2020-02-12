@@ -178,7 +178,8 @@ while True:
     print(datetime.datetime.now())
     print("Waiting for data")
     message, address = server_socket.recvfrom(1024)
-    influxdb_connected = influxdb_sendSensorData(influxdb_client, "server.py", {"udp": {"v": 1, "u": "on/off"}})
+    if influxdb_connected:
+        influxdb_connected = influxdb_sendSensorData(influxdb_client, "server.py", {"udp": {"v": 1, "u": "on/off"}})
     print("UDP received, starting coap", address[0])
     caophost = address[0]
 
