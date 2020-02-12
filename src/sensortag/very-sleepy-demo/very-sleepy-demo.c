@@ -67,7 +67,7 @@
 #define DO_RESTART 0
 /*---------------------------------------------------------------------------*/
 /* Observer notification period params in seconds */
-#define ON_TIME_DEFAULT  20
+#define ON_TIME_DEFAULT  2
 #define ON_TIME_MIN      1
 #define ON_TIME_MAX      60 
 /*---------------------------------------------------------------------------*/
