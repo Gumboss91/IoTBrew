@@ -132,6 +132,7 @@ def influxdb_sendSensorData(influxdb_client, sensor, jsondata):
     except influxdb.exceptions.InfluxDBServerError:
         print("Influxdb storage failed")
         return False
+
 def influxdb_sendSensorDataStr(influxdb_client, sensor, data):
     if data == None:
         return True
@@ -181,42 +182,8 @@ while True:
     print("UDP received, starting coap", address[0])
     caophost = address[0]
 
-    if(caophost not in sensor_res_cache or len(sensor_res_cache[caophost]["res"]) < 1):
-        configureSleep(caophost)
-        sensor_res_cache[caophost] = getRessources(caophost)
-        sensor_res_cache[caophost]["cfg"] = getConfig(caophost)
-    else:
-        dev_res = getRessources(caophost)
-        dev_cfg = getConfig(caophost)
-        if dev_res and dev_cfg and (dev_res["raw"] != sensor_res_cache[caophost]["raw"] \
-          or dev_cfg != sensor_res_cache[caophost]["cfg"]):
-            print("Cache invalid, reconfigure")
-            influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache": {"v": 1, "u": "on/off"}})
-            influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache_cause_res": {"v": dev_res["raw"], "u": sensor_res_cache[caophost]["raw"]}})
-            influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache_cause_cfg": {"v": dev_cfg, "u": sensor_res_cache[caophost]["cfg"]}})
-            if(dev_cfg != sensor_res_cache[caophost]["cfg"]):
-                configureSleep(caophost)
-                dev_cfg = getConfig(caophost)
-            sensor_res_cache[caophost] = dev_res
-            sensor_res_cache[caophost]["cfg"] = dev_cfg
-        
-    print("Cached", sensor_res_cache[caophost])
-    coapclient = CoapClient(server=(caophost, COAP_PORT))
-    sensordata = []
-    for url in sensor_res_cache[caophost]["res"]:
-        response = coapclient.get(url, timeout=COAP_TIMEOUT)
-        if(response):
-            sensordata.append(response.payload)
-        else:
-            influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"timeout": {"v": 1, "u": url}})
-            print("Coap Timeout")
-    coapclient.stop()
-    coapclient.close()
-    del(coapclient)
-
-    for data in sensordata:
-        if influxdb_connected:
-                influxdb_connected = influxdb_sendSensorDataStr(influxdb_client, caophost, data)
-        if mqtt_connected:
-            client.publish("6lopawan/sensor/" + caophost + "/" + url, response.payload)
-            print("Publish:", response.payload)
+    if influxdb_connected:
+        influxdb_connected = influxdb_sendSensorDataStr(influxdb_client, caophost, message)
+    if mqtt_connected:
+        client.publish("6lopawan/sensor/" + caophost + "/" + url, message)
+        print("Publish:", message)

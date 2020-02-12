@@ -80,7 +80,7 @@
 #define KEEP_MAC_ON_MIN_PERIOD 10 /* secs */
 /*---------------------------------------------------------------------------*/
 #define PERIODIC_INTERVAL_OFF         (20*CLOCK_SECOND)
-#define PERIODIC_INTERVAL_ON         (10*CLOCK_SECOND)
+#define PERIODIC_INTERVAL_ON         (2*CLOCK_SECOND)
 /*---------------------------------------------------------------------------*/
 #define POST_STATUS_BAD           0x80
 #define POST_STATUS_HAS_MODE      0x40
@@ -176,6 +176,7 @@ readings_batt_get_handler(coap_message_t *request, coap_message_t *response, uin
                               strlen(not_supported_msg));
   }
 }
+
 /*---------------------------------------------------------------------------*/
 RESOURCE(readings_batt_resource, "title=\"Sensor Batt Readings\";obs",
          readings_batt_get_handler, NULL, NULL, NULL);
@@ -210,6 +211,7 @@ readings_press_get_handler(coap_message_t *request, coap_message_t *response, ui
                               strlen(not_supported_msg));
   }
 }
+
 /*---------------------------------------------------------------------------*/
 RESOURCE(readings_press_resource, "title=\"Sensor Press Readings\";obs",
          readings_press_get_handler, NULL, NULL, NULL);
@@ -244,6 +246,8 @@ readings_hum_get_handler(coap_message_t *request, coap_message_t *response, uint
                               strlen(not_supported_msg));
   }
 }
+
+
 /*---------------------------------------------------------------------------*/
 RESOURCE(readings_hum_resource, "title=\"Sensor Hum Readings\";obs",
          readings_hum_get_handler, NULL, NULL, NULL);
@@ -570,7 +574,7 @@ static inline void sendUdp(uint8_t status) {
   SENSORS_ACTIVATE(opt_3001_sensor);
   SENSORS_ACTIVATE(tmp_007_sensor);
 
-  simple_udp_sendto(&mcast_conn, udp_mcast_buf, sizeof(udp_mcast_buf), &ipaddr);
+  simple_udp_sendto(&mcast_conn, udp_mcast_buf, strlen(udp_mcast_buf), &ipaddr);
   PRINTF("UDP send %d\n", status);
 }
 /*---------------------------------------------------------------------------*/
@@ -578,6 +582,8 @@ PROCESS_THREAD(very_sleepy_demo_process, ev, data)
 {
   uint8_t mac_keep_on;
   uint8_t timer_status;
+  int temp=-1;
+  int voltage=-1;
   #define TIMER_ONTIME_FIRED 0x01
   #define TIMER_OFFTIME_FIRED 0x02
 
@@ -684,6 +690,27 @@ PROCESS_THREAD(very_sleepy_demo_process, ev, data)
         coap_notify_observers(&readings_press_resource);
         coap_notify_observers(&readings_light_resource);
         coap_notify_observers(&readings_temp_resource);
+
+        temp = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
+        voltage = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
+        snprintf((char *)udp_mcast_buf, COAP_MAX_CHUNK_SIZE,
+             "{"
+             "\"tmp\":{\"v\":%d,\"u\":\"C\"},"
+             "\"volt\":{\"v\":%d,\"u\":\"mV\"},"
+             "\"t_press\":{\"v\":%d.%02u,\"u\":\"C\"},"
+             "\"press\":{\"v\":%d.%02u,\"u\":\"Pa\"},"
+             "\"t_hum\":{\"v\":%d.%02u,\"u\":\"C\"},"
+             "\"hum\":{\"v\":%d.%02u,\"u\":\"%%RH\"},"
+             "\"light\":{\"v\":%d.02%u,\"u\":\"Lux\"},"
+             "\"t_obj\":{\"v\":%d.%03u,\"u\":\"C\"},"
+             "\"t_amb\":{\"v\":%d.%03u,\"u\":\"C\"}"
+             "}",
+             temp, (voltage * 125) >> 5,
+             temp_press/100, abs(temp_press)%100, pressure/100, abs(pressure)%100,
+             temp_hum/100, abs(temp_hum)%100, humidity/100, abs(humidity)%100,
+             light/100, abs(light)%100,
+             temp_obj/1000, abs(temp_obj)%1000, temp_ambient/1000, abs(temp_ambient)%1000
+             );
 
         sendUdp(0);
         
