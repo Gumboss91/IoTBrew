@@ -27,7 +27,7 @@ INFLUXDB_DATABASE = 'home_db'
 MQTT_BROCKER = "127.0.0.1"
 
 # Usage of data
-USE_INFLUXDB = True
+USE_INFLUXDB = False
 USE_MQTT=False
 
 # Normal stuff
