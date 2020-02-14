@@ -183,6 +183,20 @@ while True:
     print("UDP received, starting coap", address[0], message)
     caophost = address[0]
 
+    if(caophost not in sensor_res_cache or len(sensor_res_cache[caophost]["res"]) < 1):
+        configureSleep(caophost)
+        sensor_res_cache[caophost]["cfg"] = getConfig(caophost)
+    else:
+        dev_cfg = getConfig(caophost)
+        if dev_cfg and dev_cfg != sensor_res_cache[caophost]["cfg"]:
+            print("Cache invalid, reconfigure")
+            influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache": {"v": 1, "u": "on/off"}})
+            influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache_cause_cfg": {"v": dev_cfg, "u": sensor_res_cache[caophost]["cfg"]}})
+
+            configureSleep(caophost)
+            dev_cfg = getConfig(caophost)
+            sensor_res_cache[caophost]["cfg"] = dev_cfg
+
     if influxdb_connected:
         influxdb_connected = influxdb_sendSensorDataStr(influxdb_client, caophost, message)
     if mqtt_connected:
