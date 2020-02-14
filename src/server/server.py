@@ -185,6 +185,7 @@ while True:
 
     if(caophost not in sensor_res_cache or len(sensor_res_cache[caophost]["res"]) < 1):
         configureSleep(caophost)
+        sensor_res_cache[caophost] = {}
         sensor_res_cache[caophost]["cfg"] = getConfig(caophost)
     else:
         dev_cfg = getConfig(caophost)
