@@ -191,8 +191,9 @@ while True:
         dev_cfg = getConfig(caophost)
         if dev_cfg and dev_cfg != sensor_res_cache[caophost]["cfg"]:
             print("Cache invalid, reconfigure")
-            influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache": {"v": 1, "u": "on/off"}})
-            influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache_cause_cfg": {"v": dev_cfg, "u": sensor_res_cache[caophost]["cfg"]}})
+            if influxdb_connected:
+                influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache": {"v": 1, "u": "on/off"}})
+                influxdb_connected = influxdb_sendSensorData(influxdb_client, caophost, {"recache_cause_cfg": {"v": dev_cfg, "u": sensor_res_cache[caophost]["cfg"]}})
 
             configureSleep(caophost)
             dev_cfg = getConfig(caophost)
