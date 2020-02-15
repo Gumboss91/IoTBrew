@@ -27,7 +27,7 @@ INFLUXDB_DATABASE = 'home_db'
 MQTT_BROCKER = "127.0.0.1"
 
 # Usage of data
-USE_INFLUXDB = False
+USE_INFLUXDB = True
 USE_MQTT=False
 
 # Normal stuff
@@ -182,6 +182,8 @@ while True:
         influxdb_connected = influxdb_sendSensorData(influxdb_client, "server.py", {"udp": {"v": 1, "u": "on/off"}})
     print("UDP received, starting coap", address[0], message)
     caophost = address[0]
+
+    message = message.decode("utf-8")
 
     if(caophost not in sensor_res_cache):
         configureSleep(caophost)
