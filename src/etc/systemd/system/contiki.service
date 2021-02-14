@@ -1,0 +1,12 @@
+[Unit]
+Description=Contiki Border Router
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+StandardOutput=null
+#file:/tmp/contiki.log
+StandardError=null
+#file:/tmp/contiki.err
+ExecStart=/home/pi/contiki-ng/examples/rpl-border-router/border-router.native bbbb::6d26:b1b6:5142:21be/64 -s /dev/ttyACM0

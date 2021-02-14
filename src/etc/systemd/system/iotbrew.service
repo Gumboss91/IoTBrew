@@ -1,0 +1,12 @@
+[Unit]
+Description=IotBrew Data Collector Server
+After=network.target contiki.service
+
+[Service]
+Type=simple
+Restart=always
+StandardOutput=null
+#file:/tmp/contiki.log
+StandardError=null
+#file:/tmp/contiki.err
+ExecStart=/usr/bin/python3 /home/pi/IoTBrew/src/server/server.py
